@@ -6,14 +6,17 @@ import { colors, fonts, shadows, responsive } from "../styles";
 const StyledInputWrapper = styled.div`
   width: 100%;
   opacity: ${({ disabled }) => (disabled ? "0.5" : "1")};
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
 `;
 
 const StyledLabel = styled.label`
-  color: rgb(${colors.grey});
-  font-size: 13px;
-  font-weight: ${fonts.weight.semibold};
-  width: 100%;
   opacity: ${({ hide }) => (hide ? 0 : 1)};
+  align-self: start;
+  width: 100%;
+  margin-left: 6px;
+  text-align: left;
 `;
 
 const StyledInput = styled.input`
@@ -33,8 +36,8 @@ const StyledInput = styled.input`
   letter-spacing: normal;
   text-align: left;
   border-radius: 8px;
-  -webkit-box-shadow: ${shadows.medium};
-  box-shadow: ${shadows.medium};
+  -webkit-box-shadow: ${({ shadow }) => (shadow ? shadows.medium : "none")};
+  box-shadow: ${({ shadow }) => (shadow ? shadows.medium : "none")};
   outline: none;
   &::placeholder {
     color: rgba(${colors.grey}, 0.8);
@@ -52,41 +55,21 @@ const Input = ({
   type,
   disabled,
   value,
+  shadow,
   placeholder,
   monospace,
   ...props
 }) => {
-  let _label = label;
-  let _placeholder = placeholder;
-  if (!label) {
-    if (type === "email") {
-      _label = "Email";
-      _placeholder = "youremail@address.com";
-    } else if (type === "password") {
-      _label = "Password";
-      _placeholder = "*********";
-    } else if (type === "text") {
-      _label = "";
-    }
-  }
-  if (!placeholder) {
-    if (type === "email") {
-      _placeholder = "youremail@address.com";
-    } else if (type === "password") {
-      _placeholder = "*********";
-    } else if (type === "text") {
-      _placeholder = "";
-    }
-  }
   return (
     <StyledInputWrapper disabled={disabled}>
-      <StyledLabel hide={_label === "Input"}>{_label}</StyledLabel>
+      <StyledLabel hide={label === "Input"}>{label}</StyledLabel>
       <StyledInput
         disabled={disabled}
         color={color}
+        shadow={shadow}
         type={type}
         value={!disabled ? value : ""}
-        placeholder={_placeholder}
+        placeholder={placeholder}
         monospace={monospace}
         {...props}
       />
@@ -98,6 +81,7 @@ Input.propTypes = {
   type: PropTypes.string.isRequired,
   label: PropTypes.string,
   color: PropTypes.string,
+  shadow: PropTypes.bool,
   placeholder: PropTypes.string,
   monospace: PropTypes.bool,
   disabled: PropTypes.bool
@@ -106,6 +90,7 @@ Input.propTypes = {
 Input.defaultProps = {
   label: "",
   color: "white",
+  shadow: true,
   placeholder: "",
   monospace: false,
   disabled: false

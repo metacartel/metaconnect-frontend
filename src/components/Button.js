@@ -12,6 +12,21 @@ const StyledIcon = styled.div`
   top: calc((100% - 15px) / 2);
 `;
 
+const StyledHoverLayer = styled.div`
+  transition: ${transitions.button};
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: rgb(${colors.white}, 0.1);
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+`;
+
 const StyledButton = styled.button`
   transition: ${transitions.button};
   position: relative;
@@ -43,12 +58,6 @@ const StyledButton = styled.button`
   @media (hover: hover) {
     &:hover {
       transform: ${({ disabled }) => (!disabled ? "translateY(-1px)" : "none")};
-      background-color: ${({ disabled, hoverColor, color }) =>
-        !disabled
-          ? hoverColor
-            ? `rgb(${colors[hoverColor]})`
-            : `rgb(${colors[color]})`
-          : `rgb(${colors[color]})`};
       box-shadow: ${({ disabled, outline }) =>
         !disabled
           ? outline
@@ -56,19 +65,18 @@ const StyledButton = styled.button`
             : `${shadows.hover}`
           : `${shadows.soft}`};
     }
+
+    &:hover ${StyledHoverLayer} {
+      opacity: 1;
+      visibility: visible;
+    }
   }
 
   &:active {
     transform: ${({ disabled }) => (!disabled ? "translateY(1px)" : "none")};
-    background-color: ${({ disabled, activeColor, color }) =>
-      !disabled
-        ? activeColor
-          ? `rgb(${colors[activeColor]})`
-          : `rgb(${colors[color]})`
-        : `rgb(${colors[color]})`};
     box-shadow: ${({ outline }) => (outline ? "none" : `${shadows.soft}`)};
     color: ${({ outline, color }) =>
-      outline ? `rgb(${colors[color]})` : `rgba(${colors.whiteTransparent})`};
+      outline ? `rgb(${colors[color]})` : `rgba(${colors.white}, 0.24)`};
 
     & ${StyledIcon} {
       opacity: 0.8;
@@ -92,9 +100,6 @@ const Button = ({
   outline,
   type,
   color,
-  hoverColor,
-  activeColor,
-  textTransform,
   disabled,
   icon,
   left,
@@ -105,14 +110,12 @@ const Button = ({
     type={type}
     outline={outline}
     color={color}
-    hoverColor={hoverColor}
-    activeColor={activeColor}
-    textTransform={textTransform}
     disabled={disabled}
     icon={icon}
     left={left}
     {...props}
   >
+    <StyledHoverLayer />
     <StyledIcon />
     {fetching ? (
       <Loader size={20} color="white" background={color} />
@@ -128,8 +131,6 @@ Button.propTypes = {
   outline: PropTypes.bool,
   type: PropTypes.string,
   color: PropTypes.string,
-  hoverColor: PropTypes.string,
-  activeColor: PropTypes.string,
   textTransform: PropTypes.string,
   disabled: PropTypes.bool,
   icon: PropTypes.any,
@@ -141,8 +142,6 @@ Button.defaultProps = {
   outline: false,
   type: "button",
   color: "darkGrey",
-  hoverColor: "darkGrey",
-  activeColor: "darkGrey",
   textTransform: "none",
   disabled: false,
   icon: null,

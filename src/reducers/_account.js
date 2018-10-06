@@ -6,6 +6,8 @@ const ACCOUNT_UPDATE_ADDRESS = "account/ACCOUNT_UPDATE_ADDRESS";
 
 const ACCOUNT_UPDATE_NAME = "account/ACCOUNT_UPDATE_NAME";
 
+const ACCOUNT_UPDATE_SOCIAL_MEDIA = "account/ACCOUNT_UPDATE_SOCIAL_MEDIA";
+
 const ACCOUNT_UPDATE_NETWORK = "account/ACCOUNT_UPDATE_NETWORK";
 
 const ACCOUNT_UPDATE_PROVIDER = "account/ACCOUNT_UPDATE_PROVIDER";
@@ -21,29 +23,27 @@ export const accountUpdateNetwork = network => dispatch => {
   dispatch({ type: ACCOUNT_UPDATE_NETWORK, payload: network });
 };
 
-export const accountUpdateWeb3 = web3 => dispatch => {
-  dispatch({ type: ACCOUNT_UPDATE_WEB3, payload: web3 });
-};
+export const accountUpdateWeb3 = web3 => ({
+  type: ACCOUNT_UPDATE_WEB3,
+  payload: web3
+});
 
-export const accountUpdateAddress = address => (dispatch, getState) => {
-  if (!address) return;
-  dispatch({
-    type: ACCOUNT_UPDATE_ADDRESS,
-    payload: address
-  });
-};
+export const accountUpdateAddress = address => ({
+  type: ACCOUNT_UPDATE_ADDRESS,
+  payload: address
+});
 
-export const accountUpdateName = name => (dispatch, getState) => {
-  if (!name) return;
-  dispatch({
-    type: ACCOUNT_UPDATE_NAME,
-    payload: name
-  });
-};
+export const accountUpdateName = name => ({
+  type: ACCOUNT_UPDATE_NAME,
+  payload: name
+});
 
-export const accountClearState = () => dispatch => {
-  dispatch({ type: ACCOUNT_CLEAR_STATE });
-};
+export const accountUpdateSocialMedia = socialMedia => ({
+  type: ACCOUNT_UPDATE_SOCIAL_MEDIA,
+  payload: socialMedia
+});
+
+export const accountClearState = () => ({ type: ACCOUNT_CLEAR_STATE });
 
 export // -- Reducer --------------------------------------------------------------- //
 const INITIAL_STATE = {
@@ -51,7 +51,15 @@ const INITIAL_STATE = {
   provider: null,
   web3: null,
   address: "",
-  name: ""
+  name: "",
+  socialMedia: {
+    twitter: "",
+    telegram: "",
+    github: "",
+    linkedin: "",
+    phone: "",
+    email: ""
+  }
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -60,6 +68,8 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, address: action.payload };
     case ACCOUNT_UPDATE_NAME:
       return { ...state, name: action.payload };
+    case ACCOUNT_UPDATE_SOCIAL_MEDIA:
+      return { ...state, socialMedia: action.payload };
     case ACCOUNT_UPDATE_NETWORK:
       return { ...state, network: action.payload };
     case ACCOUNT_UPDATE_PROVIDER:

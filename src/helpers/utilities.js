@@ -108,3 +108,23 @@ export const getDataString = (func, arrVals) => {
   const data = func + val;
   return data;
 };
+
+/**
+ * @desc format social media handles
+ * @param  {String}  input
+ * @return {String}
+ */
+export const formatHandle = input => {
+  const handle = !!input ? "@" + input.replace(/[\s@]/gi, "") : "";
+  return handle;
+};
+
+/**
+ * @desc clean social media handles
+ * @param  {String}  input
+ * @return {String}
+ */
+export const cleanHandle = input => {
+  const handle = input.replace(/@/gi, "");
+  return handle;
+};

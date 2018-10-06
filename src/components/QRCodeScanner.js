@@ -22,8 +22,6 @@ const StyledCloseButton = styled(CloseButton)`
   z-index: 10;
   top: 15px;
   right: 15px;
-  width: 30px;
-  height: 30px;
 `;
 
 class QRCodeScanner extends Component {
@@ -56,7 +54,7 @@ class QRCodeScanner extends Component {
   render() {
     return (
       <StyledWrapper>
-        <StyledCloseButton color="white" onClick={this.onClose} />
+        <StyledCloseButton onClick={this.onClose} />
         <Column spanHeight center>
           <QrReader
             delay={this.state.delay}

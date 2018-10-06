@@ -11,7 +11,7 @@ const StyledWrapper = styled.div`
   padding: 20px;
   text-transform: uppercase;
   text-align: center;
-  height: 100%;
+  height: 100%;w
 `;
 
 const NotFound = () => (

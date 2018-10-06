@@ -2,24 +2,23 @@ export const colors = {
   white: "255, 255, 255",
   black: "0, 0, 0",
   grey: "169, 169, 188",
-  lightGrey: "247, 248, 252",
+  lightGrey: "237, 237, 237",
   darkGrey: "113, 119, 138",
   dark: "12, 12, 13",
   blue: "101, 127, 230",
   yellow: "250, 188, 45",
   orange: "246, 133, 27",
   green: "84, 209, 146",
-  red: "214, 75, 71",
+  red: "255, 0, 120",
   purple: "110, 107, 233",
-  walletconnect: "64, 153, 255"
+  background: "55, 77, 174"
 };
 
 export const fonts = {
   size: {
     tiny: "10px",
     small: "12px",
-    smedium: "14px",
-    medium: "15px",
+    medium: "16px",
     large: "18px",
     big: "22px",
     h1: "42px",
@@ -235,9 +234,8 @@ export const globalStyles = `
     font-stretch: normal;
     font-weight: ${fonts.weight.normal};
     font-size: ${fonts.size.medium};
-    background: rgb(${colors.purple});
-color: rgb(${colors.white});
-
+    background: rgb(${colors.background});
+    color: rgb(${colors.white});
     overflow-y:auto;
     text-rendering: optimizeLegibility;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
