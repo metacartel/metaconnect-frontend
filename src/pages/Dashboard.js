@@ -11,6 +11,7 @@ import camera from "../assets/camera.svg";
 
 import twitter from "../assets/twitter.svg";
 import telegram from "../assets/telegram.svg";
+import github from "../assets/github.svg";
 import linkedin from "../assets/linkedin.svg";
 import phone from "../assets/phone.svg";
 import email from "../assets/email.svg";
@@ -155,6 +156,12 @@ class Dashboard extends Component {
                       <StyledSocialMediaIcon icon={telegram} />
                     </a>
                   )}
+                  {!!socialMedia.github && (
+                    <a href={`https://github.com/${socialMedia.github}`}>
+                      <StyledSocialMediaIcon icon={github} />
+                    </a>
+                  )}
+
                   {!!socialMedia.linkedin && (
                     <a href={`https://linkedin.com/in/${socialMedia.linkedin}`}>
                       <StyledSocialMediaIcon icon={linkedin} />
