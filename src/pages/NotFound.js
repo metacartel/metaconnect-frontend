@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import BaseLayout from "../layouts/base";
+import Base from "../layouts/base";
 import Link from "../components/Link";
 
 const StyledWrapper = styled.div`
@@ -15,12 +15,12 @@ const StyledWrapper = styled.div`
 `;
 
 const NotFound = () => (
-  <BaseLayout>
+  <Base>
     <StyledWrapper>
       <Link to="/">
         <h3>{"Not Found"}</h3>
       </Link>
     </StyledWrapper>
-  </BaseLayout>
+  </Base>
 );
 export default NotFound;

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import BaseLayout from "../layouts/base";
+import Base from "../layouts/base";
 import Column from "../components/Column";
 import Form from "../components/Form";
 import Input from "../components/Input";
@@ -25,42 +25,39 @@ const StyledButton = styled(Button)`
 `;
 
 class Home extends Component {
+  state = {
+    name: ""
+  };
   onSubmit = () => {
-    // do something
+    this.props.accountUpdateName(this.state.name);
+    window.browserHistory.push("/dashboard");
   };
   render = () => (
-    <BaseLayout>
+    <Base>
       <StyledColumn>
         <h1>MetaConnect</h1>
         <p>A crypto handshake to start your journey using Ethereum</p>
         <Form onSubmit={this.onSubmit}>
           <Input
-            label=""
+            label="Username"
             placeholder="@username"
             type="text"
-            value={this.props.name}
-            onChange={({ target }) =>
-              this.props.accountUpdateName(target.value)
-            }
+            value={this.state.name}
+            onChange={({ target }) => this.setState({ name: target.value })}
           />
           <StyledButton type="submit">Submit</StyledButton>
         </Form>
       </StyledColumn>
-    </BaseLayout>
+    </Base>
   );
 }
 
 Home.propTypes = {
-  name: PropTypes.string.isRequired,
   accountUpdateName: PropTypes.func.isRequired
 };
 
-const reduxProps = ({ account }) => ({
-  name: account.name
-});
-
 export default connect(
-  reduxProps,
+  null,
   {
     accountUpdateName
   }

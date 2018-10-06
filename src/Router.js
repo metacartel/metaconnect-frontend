@@ -12,14 +12,14 @@ class Router extends Component {
   }
 
   render = () => {
-    const address = this.props.address;
+    const name = this.props.name;
     return (
       <Switch>
         <Route
           exact
           path="/"
           render={routerProps => {
-            if (address) {
+            if (name) {
               return <Redirect to="/dashboard" />;
             }
             return <Home {...routerProps} />;
@@ -29,7 +29,7 @@ class Router extends Component {
           exact
           path="/dashboard"
           render={routerProps => {
-            if (!address) {
+            if (!name) {
               return <Redirect to="/" />;
             }
             return <Dashboard {...routerProps} />;
@@ -46,7 +46,7 @@ Router.contextTypes = {
 };
 
 const reduxProps = ({ account }) => ({
-  address: account.address
+  name: account.name
 });
 
 export default withRouter(

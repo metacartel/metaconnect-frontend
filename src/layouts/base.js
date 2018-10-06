@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
@@ -6,6 +6,7 @@ import Link from "../components/Link";
 import Wrapper from "../components/Wrapper";
 import Column from "../components/Column";
 import Notification from "../components/Notification";
+import QRCodeScanner from "../components/QRCodeScanner";
 import { Blockie } from "dapparatus";
 import { ellipseAddress } from "../helpers/utilities";
 import metaconnect from "../assets/metaconnect.png";
@@ -57,53 +58,65 @@ const StyledActiveAccount = styled.div`
   font-weight: 500;
 `;
 
-const BaseLayout = ({
-  children,
-  accountType,
-  accountAddress,
-  network,
-  ...props
-}) => {
-  return (
-    <StyledLayout>
-      <Column maxWidth={1000} spanHeight>
-        <StyledHeader>
-          <Link to="/">
-            <StyledBrandingWrapper>
-              <StyledBranding alt="MetaConnect" />
-              <h1>MetaConnect</h1>
-            </StyledBrandingWrapper>
-          </Link>
-          {accountAddress && (
-            <Link to="/dashboard">
-              <StyledActiveAccount>
-                <Blockie address={accountAddress} />
-                <p>{ellipseAddress(accountAddress)}</p>
-              </StyledActiveAccount>
-            </Link>
-          )}
-        </StyledHeader>
-        <StyledContent>{children}</StyledContent>
-      </Column>
-      <Notification />
-    </StyledLayout>
-  );
-};
+class Base extends Component {
+  onQRCodeError = () => {};
 
-BaseLayout.propTypes = {
+  onQRCodeValidate = data => {
+    let result = null;
+    if (data.startsWith(/^https?:\/\//gi)) {
+      result = data;
+    }
+    return { data, result, onError: this.onQRCodeError };
+  };
+
+  render() {
+    return (
+      <StyledLayout>
+        <Column maxWidth={1000} spanHeight>
+          <StyledHeader>
+            <Link to="/">
+              <StyledBrandingWrapper>
+                <StyledBranding alt="MetaConnect" />
+                <h1>MetaConnect</h1>
+              </StyledBrandingWrapper>
+            </Link>
+            {this.props.address && (
+              <Link to="/dashboard">
+                <StyledActiveAccount>
+                  <Blockie address={this.props.address} />
+                  <p>{ellipseAddress(this.props.address)}</p>
+                </StyledActiveAccount>
+              </Link>
+            )}
+          </StyledHeader>
+          <StyledContent>{this.props.children}</StyledContent>
+        </Column>
+        <Notification />
+        {this.props.scan && (
+          <QRCodeScanner
+            onValidate={this.onQRCodeValidate}
+            onError={this.onQRCodeError}
+            onScan={this.props.onScan}
+            onClose={this.props.toggleScanner}
+          />
+        )}
+      </StyledLayout>
+    );
+  }
+}
+
+Base.propTypes = {
   children: PropTypes.node.isRequired,
-  accountType: PropTypes.string.isRequired,
-  accountAddress: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
   network: PropTypes.string.isRequired
 };
 
 const reduxProps = ({ account }) => ({
-  accountType: account.type,
-  accountAddress: account.address,
+  address: account.address,
   network: account.network
 });
 
 export default connect(
   reduxProps,
   null
-)(BaseLayout);
+)(Base);
