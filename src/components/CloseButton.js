@@ -1,6 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import { colors, transitions } from '../styles';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { colors, transitions } from "../styles";
 
 const StyledCloseButton = styled.div`
   width: 35px;
@@ -19,23 +20,31 @@ const StyledCloseButton = styled.div`
 
 const StyledFirstLine = styled.div`
   position: absolute;
-  width: 60%;
-  border: 1px solid rgb(${colors.black});
-  transition: ${transitions.base}
+  width: 90%;
+  border: ${({ color }) => `1px solid rgb(${colors[color]})`};
+  transition: ${transitions.base};
 `;
 
 const StyledSecondLine = styled.div`
   position: absolute;
-  width: 60%;
-  border: 1px solid rgb(${colors.black});
+  width: 90%;
+  border: ${({ color }) => `1px solid rgb(${colors[color]})`};
   transform: rotate(90deg);
 `;
 
-const CloseButton = () => (
-  <StyledCloseButton>
-    <StyledFirstLine />
-    <StyledSecondLine />
+const CloseButton = ({ color, ...props }) => (
+  <StyledCloseButton {...props}>
+    <StyledFirstLine color={color} />
+    <StyledSecondLine color={color} />
   </StyledCloseButton>
 );
+
+CloseButton.propTypes = {
+  color: PropTypes.string
+};
+
+CloseButton.defaultProps = {
+  color: "black"
+};
 
 export default CloseButton;

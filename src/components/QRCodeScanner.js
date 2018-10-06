@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import QrReader from "react-qr-reader";
 import Column from "./Column";
-import cross from "../assets/cross.svg";
+import CloseButton from "./CloseButton";
 import { colors } from "../styles";
 
 const StyledWrapper = styled.div`
@@ -17,21 +17,13 @@ const StyledWrapper = styled.div`
   background: rgb(${colors.black});
 `;
 
-const StyledClose = styled.img`
+const StyledCloseButton = styled(CloseButton)`
   position: absolute;
   z-index: 10;
   top: 15px;
   right: 15px;
   width: 30px;
   height: 30px;
-  mask: url(${cross}) center no-repeat;
-  mask-size: 95%;
-  background-color: rgb(${colors.grey});
-  @media (hover: hover) {
-    &:hover {
-      opacity: 0.6;
-    }
-  }
 `;
 
 class QRCodeScanner extends Component {
@@ -64,7 +56,7 @@ class QRCodeScanner extends Component {
   render() {
     return (
       <StyledWrapper>
-        <StyledClose onClick={this.onClose} />
+        <StyledCloseButton color="white" onClick={this.onClose} />
         <Column spanHeight center>
           <QrReader
             delay={this.state.delay}
