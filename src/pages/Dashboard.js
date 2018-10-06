@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import Button from "../components/Button";
 import QRCodeDisplay from "../components/QRCodeDisplay";
-import QRCodeScanner from "../components/QRCodeScanner";
 import Base from "../layouts/base";
 
 const StyledTitle = styled.h3`
