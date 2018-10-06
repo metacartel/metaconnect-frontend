@@ -84,9 +84,6 @@ const StyledSocialMediaIcon = styled.div`
   background-image: ${({ icon }) => `url(${icon})`};
   background-size: contain;
   background-repeat: no-repeat;
-  &:first-child {
-    margin-left: 0;
-  }
 `;
 
 let intervalId = null;
