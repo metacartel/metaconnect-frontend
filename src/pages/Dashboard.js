@@ -14,6 +14,7 @@ import linkedin from "../assets/linkedin.svg";
 import phone from "../assets/phone.svg";
 import email from "../assets/email.svg";
 import { responsive } from "../styles";
+import { metaConnectionShow } from "../reducers/_metaConnection";
 import { formatHandle, parseQueryParams } from "../helpers/utilities";
 
 const StyledWrapper = styled(Column)`
@@ -148,6 +149,7 @@ class Dashboard extends Component {
   toggleScanner = () => this.setState({ scan: !this.state.scan });
 
   onScan = string => {
+    console.log("onScan string", string);
     const pathEnd =
       string.indexOf("?") !== -1 ? string.indexOf("?") : undefined;
     const queryString = pathEnd ? string.substring(pathEnd) : "";
@@ -270,5 +272,5 @@ const reduxProps = ({ account }) => ({
 
 export default connect(
   reduxProps,
-  null
+  { metaConnectionShow }
 )(Dashboard);

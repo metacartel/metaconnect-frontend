@@ -33,7 +33,7 @@ class Base extends Component {
 
   onQRCodeValidate = data => {
     let result = null;
-    if (data.startsWith(/^https?:\/\//gi)) {
+    if (data.startsWith("http:") || data.startsWith("https:")) {
       result = data;
     }
     return { data, result, onError: this.onQRCodeError };
