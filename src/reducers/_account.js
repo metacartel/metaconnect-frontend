@@ -98,7 +98,7 @@ const INITIAL_STATE = {
   web3: null,
   address: getLocal(localStorageKey).address || "",
   name: getLocal(localStorageKey).name || "",
-  metaConnections: getLocal(localStorageKey).metaConnections || 0,
+  metaConnections: getLocal("METACONNECTIONS") || {},
   socialMedia: getLocal(localStorageKey).socialMedia || {}
 };
 

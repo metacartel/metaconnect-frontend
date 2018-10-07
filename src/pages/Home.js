@@ -55,7 +55,11 @@ class Home extends Component {
   onSubmit = () => {
     const name = this.state.name.replace(/@/gi, "");
     this.props.accountUpdateName(name);
-    window.browserHistory.push("/dashboard");
+    if (this.props.metaConnectionName) {
+      window.browserHistory.push("/meta-connection");
+    } else {
+      window.browserHistory.push("/dashboard");
+    }
   };
   render = () => (
     <Base>
@@ -90,8 +94,12 @@ Home.propTypes = {
   accountUpdateName: PropTypes.func.isRequired
 };
 
+const reduxProps = ({ metaConnection }) => ({
+  metaConnectionName: metaConnection.name
+});
+
 export default connect(
-  null,
+  reduxProps,
   {
     accountUpdateName
   }

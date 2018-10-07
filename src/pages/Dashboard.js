@@ -14,6 +14,7 @@ import linkedin from "../assets/linkedin.svg";
 import phone from "../assets/phone.svg";
 import email from "../assets/email.svg";
 import { responsive } from "../styles";
+import { formatHandle, parseQueryParams } from "../helpers/utilities";
 
 const StyledWrapper = styled(Column)`
   padding: 20px;
@@ -98,10 +99,24 @@ const StyledSocialMediaIcon = styled.div`
   background-repeat: no-repeat;
 `;
 
+const StyledMetaConnectionsListWrapper = styled.div`
+  width: 100%;
+  margin: 20px auto;
+`;
+
+const StyledMetaConnectionsList = styled.div``;
+
+const StyledMetaConnectionsItem = styled.div`
+  margin: 10px auto;
+  text-align: left;
+`;
+
 let intervalId = null;
 
-let test =
-  "https://metaconnect.me/?handle1=someguysname&sig1=0x9242685bf161793cc25603c231bc2f568eb630ea16aa137d2664ac80388256084f8ae3bd7535248d0bd448298cc2e2071e56992d0774dc340c368ae950852ada1c";
+let baseUrl =
+  !process.env.NODE_ENV || process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://metaconnect.me";
 
 class Dashboard extends Component {
   state = {
@@ -110,7 +125,7 @@ class Dashboard extends Component {
   };
   componentDidMount() {
     this.updateURI();
-    // this.startInterval();
+    this.startInterval();
   }
   startInterval = () => {
     const self = this;
@@ -118,11 +133,13 @@ class Dashboard extends Component {
   };
   updateURI = () => {
     this.setState({ uri: "" });
-    let uri = `${test}&t=${Date.now()}`;
-    if (Object.keys(this.props.socialMedia).length) {
-      uri += `?social=${JSON.stringify(this.props.socialMedia)}`;
-    }
+    const name = this.props.name;
+    const socialMedia = encodeURIComponent(
+      JSON.stringify(this.props.socialMedia)
+    );
+    let uri = `${baseUrl}?name=${name}&socialMedia=${socialMedia}&t=${Date.now()}`;
     this.setState({ uri });
+    console.log(this.state.uri);
   };
   stopInterval = () => clearInterval(intervalId);
   componetWillUnmount() {
@@ -130,8 +147,19 @@ class Dashboard extends Component {
   }
   toggleScanner = () => this.setState({ scan: !this.state.scan });
 
-  onScan = data => {
-    // TODO do something when QR code scans
+  onScan = string => {
+    const pathEnd =
+      string.indexOf("?") !== -1 ? string.indexOf("?") : undefined;
+    const queryString = pathEnd ? string.substring(pathEnd) : "";
+    let queryParams = parseQueryParams(queryString);
+    if (Object.keys(queryParams).length) {
+      this.props.metaConnectionShow({
+        request: true,
+        name: queryParams.name,
+        socialMedia: queryParams.social ? JSON.parse(queryParams.social) : {}
+      });
+      window.browserHistory.push("/meta-connection");
+    }
     this.toggleScanner();
   };
 
@@ -197,7 +225,7 @@ class Dashboard extends Component {
           </StyledProfile>
           <StyledContainer>
             <StyledMetaConnections>
-              {this.props.metaConnections}
+              {Object.keys(this.props.metaConnections).length || 0}
               <span>{` ❤️`}</span>
             </StyledMetaConnections>
             <StyledCameraButton onClick={this.toggleScanner} />
@@ -212,6 +240,22 @@ class Dashboard extends Component {
               </StyledQRCodeWrapper>
             )}
           </Card>
+          <StyledMetaConnectionsListWrapper>
+            <h2>Your MetaConnections</h2>
+            {Object.keys(this.props.metaConnections).length ? (
+              <StyledMetaConnectionsList>
+                {Object.keys(this.props.metaConnections).map(key => (
+                  <StyledMetaConnectionsItem>
+                    {formatHandle(key)}
+                  </StyledMetaConnectionsItem>
+                ))}
+              </StyledMetaConnectionsList>
+            ) : (
+              <StyledMetaConnectionsItem>
+                {"Go make some MetaConnections"}
+              </StyledMetaConnectionsItem>
+            )}
+          </StyledMetaConnectionsListWrapper>
         </StyledWrapper>
       </Base>
     );

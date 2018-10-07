@@ -129,3 +129,32 @@ export const cleanHandle = input => {
   const handle = input.replace(/@/gi, "");
   return handle;
 };
+
+/**
+ * @desc parse url query string params
+ * @param  {String}  queryString
+ * @return {Object}
+ */
+export function parseQueryParams(queryString) {
+  if (!queryString) return {};
+
+  let parameters = {};
+
+  let pairs = (queryString[0] === "?"
+    ? queryString.substr(1)
+    : queryString
+  ).split("&");
+
+  for (let i = 0; i < pairs.length; i++) {
+    const key = pairs[i].match(/\w+(?==)/i)
+      ? pairs[i].match(/\w+(?==)/i)[0]
+      : null;
+    const value = pairs[i].match(/=.+/i)
+      ? pairs[i].match(/=.+/i)[0].substr(1)
+      : "";
+    if (key) {
+      parameters[decodeURIComponent(key)] = decodeURIComponent(value);
+    }
+  }
+  return parameters;
+}

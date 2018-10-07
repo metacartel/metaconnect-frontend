@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import Link from "../components/Link";
 import Card from "../components/Card";
 import Column from "../components/Column";
 import twitter from "../assets/twitter.svg";
@@ -71,49 +70,45 @@ const SocialMediaCard = ({ name, socialMedia, ...props }) => (
           {`@${name}`}
         </StyledName>
         <StyledSocialMediaWrapper>
-          {!Object.keys(socialMedia).length ? (
-            <Link to="/edit-social-media">{"Add Social Media"}</Link>
-          ) : (
-            <StyledSocialMedia>
-              {!!socialMedia.twitter && (
-                <a href={`https://twitter.com/${socialMedia.twitter}`}>
-                  <StyledSocialMediaIcon color="dark" icon={twitter} />
-                  <p>{formatHandle(socialMedia.twitter)}</p>
-                </a>
-              )}
-              {!!socialMedia.telegram && (
-                <a href={`https://t.me/${socialMedia.telegram}`}>
-                  <StyledSocialMediaIcon color="dark" icon={telegram} />
-                  <p>{formatHandle(socialMedia.telegram)}</p>
-                </a>
-              )}
-              {!!socialMedia.github && (
-                <a href={`https://github.com/${socialMedia.github}`}>
-                  <StyledSocialMediaIcon color="dark" icon={github} />
-                  <p>{formatHandle(socialMedia.github)}</p>
-                </a>
-              )}
+          <StyledSocialMedia>
+            {!!socialMedia.twitter && (
+              <a href={`https://twitter.com/${socialMedia.twitter}`}>
+                <StyledSocialMediaIcon color="dark" icon={twitter} />
+                <p>{formatHandle(socialMedia.twitter)}</p>
+              </a>
+            )}
+            {!!socialMedia.telegram && (
+              <a href={`https://t.me/${socialMedia.telegram}`}>
+                <StyledSocialMediaIcon color="dark" icon={telegram} />
+                <p>{formatHandle(socialMedia.telegram)}</p>
+              </a>
+            )}
+            {!!socialMedia.github && (
+              <a href={`https://github.com/${socialMedia.github}`}>
+                <StyledSocialMediaIcon color="dark" icon={github} />
+                <p>{formatHandle(socialMedia.github)}</p>
+              </a>
+            )}
 
-              {!!socialMedia.linkedin && (
-                <a href={`https://linkedin.com/in/${socialMedia.linkedin}`}>
-                  <StyledSocialMediaIcon color="dark" icon={linkedin} />
-                  <p>{formatHandle(socialMedia.linkedin)}</p>
-                </a>
-              )}
-              {!!socialMedia.email && (
-                <a href={`mailto:${socialMedia.email}`}>
-                  <StyledSocialMediaIcon color="dark" icon={email} />
-                  <p>{formatHandle(socialMedia.email)}</p>
-                </a>
-              )}
-              {!!socialMedia.phone && (
-                <a href={`tel:${socialMedia.phone}`}>
-                  <StyledSocialMediaIcon color="dark" icon={phone} />
-                  <p>{formatHandle(socialMedia.phone)}</p>
-                </a>
-              )}
-            </StyledSocialMedia>
-          )}
+            {!!socialMedia.linkedin && (
+              <a href={`https://linkedin.com/in/${socialMedia.linkedin}`}>
+                <StyledSocialMediaIcon color="dark" icon={linkedin} />
+                <p>{formatHandle(socialMedia.linkedin)}</p>
+              </a>
+            )}
+            {!!socialMedia.email && (
+              <a href={`mailto:${socialMedia.email}`}>
+                <StyledSocialMediaIcon color="dark" icon={email} />
+                <p>{formatHandle(socialMedia.email)}</p>
+              </a>
+            )}
+            {!!socialMedia.phone && (
+              <a href={`tel:${socialMedia.phone}`}>
+                <StyledSocialMediaIcon color="dark" icon={phone} />
+                <p>{formatHandle(socialMedia.phone)}</p>
+              </a>
+            )}
+          </StyledSocialMedia>
         </StyledSocialMediaWrapper>
       </StyledProfile>
     </StyledWrapper>

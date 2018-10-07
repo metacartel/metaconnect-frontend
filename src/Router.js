@@ -5,7 +5,10 @@ import PropTypes from "prop-types";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import EditSocialMedia from "./pages/EditSocialMedia";
+import MetaConnection from "./pages/MetaConnection";
 import NotFound from "./pages/NotFound";
+import { metaConnectionShow } from "./reducers/_metaConnection";
+import { parseQueryParams } from "./helpers/utilities";
 
 class Router extends Component {
   componentDidMount() {
@@ -20,6 +23,19 @@ class Router extends Component {
           exact
           path="/"
           render={routerProps => {
+            let queryParams = parseQueryParams(routerProps.location.search);
+            if (Object.keys(queryParams).length) {
+              this.props.metaConnectionShow({
+                request: true,
+                name: queryParams.name,
+                socialMedia: queryParams.social
+                  ? JSON.parse(queryParams.social)
+                  : {}
+              });
+              if (name) {
+                return <Redirect to="/meta-connection" />;
+              }
+            }
             if (name) {
               return <Redirect to="/dashboard" />;
             }
@@ -47,6 +63,20 @@ class Router extends Component {
           }}
         />
 
+        <Route
+          exact
+          path="/meta-connection"
+          render={routerProps => {
+            if (!name) {
+              return <Redirect to="/" />;
+            }
+            if (!this.props.metaConnectionName) {
+              return <Redirect to="/dashboard" />;
+            }
+            return <MetaConnection {...routerProps} />;
+          }}
+        />
+
         <Route component={NotFound} />
       </Switch>
     );
@@ -57,13 +87,14 @@ Router.contextTypes = {
   router: PropTypes.object.isRequired
 };
 
-const reduxProps = ({ account }) => ({
-  name: account.name
+const reduxProps = ({ account, metaConnection }) => ({
+  name: account.name,
+  metaConnectionName: metaConnection.name
 });
 
 export default withRouter(
   connect(
     reduxProps,
-    null
+    { metaConnectionShow }
   )(Router)
 );
