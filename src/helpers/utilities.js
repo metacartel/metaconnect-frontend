@@ -115,6 +115,7 @@ export const getDataString = (func, arrVals) => {
  * @return {String}
  */
 export const formatHandle = input => {
+  if (!input || !input.trim().length) return "";
   const handle = !!input ? "@" + input.replace(/[\s@]/gi, "") : "";
   return handle;
 };

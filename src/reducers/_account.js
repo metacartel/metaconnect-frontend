@@ -99,14 +99,7 @@ const INITIAL_STATE = {
   address: getLocal(localStorageKey).address || "",
   name: getLocal(localStorageKey).name || "",
   metaConnections: getLocal(localStorageKey).metaConnections || 0,
-  socialMedia: getLocal(localStorageKey).socialMedia || {
-    twitter: "",
-    telegram: "",
-    github: "",
-    linkedin: "",
-    phone: "",
-    email: ""
-  }
+  socialMedia: getLocal(localStorageKey).socialMedia || {}
 };
 
 export default (state = INITIAL_STATE, action) => {

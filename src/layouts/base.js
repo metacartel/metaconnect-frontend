@@ -6,6 +6,7 @@ import Wrapper from "../components/Wrapper";
 import Column from "../components/Column";
 import Notification from "../components/Notification";
 import QRCodeScanner from "../components/QRCodeScanner";
+import { responsive } from "../styles";
 
 const StyledLayout = styled.div`
   position: relative;
@@ -21,6 +22,10 @@ const StyledContent = styled(Wrapper)`
   min-height: 100vh;
   padding: 0 16px;
   padding-top: 100px;
+  @media screen and (${responsive.sm.max}) {
+    padding-top: 0;
+    ${"" /* align-items: center; */};
+  }
 `;
 
 class Base extends Component {

@@ -13,10 +13,16 @@ import github from "../assets/github.svg";
 import linkedin from "../assets/linkedin.svg";
 import phone from "../assets/phone.svg";
 import email from "../assets/email.svg";
+import { responsive } from "../styles";
 
 const StyledWrapper = styled(Column)`
   padding: 20px;
   height: 100%;
+  min-height: 100vh;
+  @media screen and (${responsive.sm.max}) {
+    padding: 20px 0;
+    padding-top: 50px;
+  }
 `;
 
 const StyledQRCodeWrapper = styled.div`
@@ -38,7 +44,7 @@ const StyledContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0 auto;
+  margin: 10px auto;
 `;
 
 const StyledParagrah = styled.p`
@@ -104,7 +110,7 @@ class Dashboard extends Component {
   };
   componentDidMount() {
     this.updateURI();
-    this.startInterval();
+    // this.startInterval();
   }
   startInterval = () => {
     const self = this;
@@ -112,8 +118,10 @@ class Dashboard extends Component {
   };
   updateURI = () => {
     this.setState({ uri: "" });
-    const uri = `${test}&t=${Date.now()}`;
-    console.log("uri", uri);
+    let uri = `${test}&t=${Date.now()}`;
+    if (Object.keys(this.props.socialMedia).length) {
+      uri += `?social=${JSON.stringify(this.props.socialMedia)}`;
+    }
     this.setState({ uri });
   };
   stopInterval = () => clearInterval(intervalId);
@@ -129,14 +137,11 @@ class Dashboard extends Component {
 
   render() {
     const { name, socialMedia } = this.props;
-    let noSocialMedia = true;
-    console.log("socialMedia", socialMedia);
-    Object.keys(socialMedia).forEach(key => {
-      if (noSocialMedia) {
-        noSocialMedia = !socialMedia[key];
-      }
-    });
-    console.log("noSocialMedia", noSocialMedia);
+    const qrcodeScale =
+      window.innerWidth < 470 ? (window.innerWidth < 370 ? 3 : 4) : 5;
+
+    console.log("!Object.keys(socialMedia).length", socialMedia);
+
     return (
       <Base
         scan={this.state.scan}
@@ -150,7 +155,7 @@ class Dashboard extends Component {
               {`@${name}`}
             </StyledName>
             <StyledSocialMediaWrapper>
-              {noSocialMedia ? (
+              {!Object.keys(socialMedia).length ? (
                 <Link to="/edit-social-media">{"Add Social Media"}</Link>
               ) : (
                 <StyledSocialMedia>
@@ -205,7 +210,7 @@ class Dashboard extends Component {
           <Card>
             {this.state.uri && (
               <StyledQRCodeWrapper>
-                <QRCodeDisplay scale={6} data={this.state.uri} />
+                <QRCodeDisplay scale={qrcodeScale} data={this.state.uri} />
               </StyledQRCodeWrapper>
             )}
           </Card>

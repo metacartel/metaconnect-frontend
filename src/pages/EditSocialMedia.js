@@ -11,10 +11,16 @@ import Button from "../components/Button";
 import CloseButton from "../components/CloseButton";
 import { accountUpdateSocialMedia } from "../reducers/_account";
 import { formatHandle, cleanHandle } from "../helpers/utilities";
+import { responsive } from "../styles";
 
 const StyledWrapper = styled(Column)`
   height: 100%;
   padding: 20px;
+  min-height: 100vh;
+  @media screen and (${responsive.sm.max}) {
+    padding: 20px 0;
+    padding-top: 50px;
+  }
 `;
 
 const StyledProfile = styled.div`
@@ -24,6 +30,9 @@ const StyledProfile = styled.div`
   flex-direction: column;
   text-align: left;
   margin-bottom: 50px;
+  @media screen and (${responsive.sm.max}) {
+    margin-bottom: 15px;
+  }
 `;
 
 const StyledName = styled.h3`
@@ -52,10 +61,10 @@ const StyledCloseButton = styled(CloseButton)`
 
 class EditSocialMedia extends Component {
   state = {
-    twitter: this.props.socialMedia.twitter,
-    telegram: this.props.socialMedia.telegram,
-    github: this.props.socialMedia.github,
-    linkedin: this.props.socialMedia.linkedin,
+    twitter: formatHandle(this.props.socialMedia.twitter),
+    telegram: formatHandle(this.props.socialMedia.telegram),
+    github: formatHandle(this.props.socialMedia.github),
+    linkedin: formatHandle(this.props.socialMedia.linkedin),
     phone: this.props.socialMedia.phone,
     email: this.props.socialMedia.email
   };
@@ -67,7 +76,11 @@ class EditSocialMedia extends Component {
     const socialMedia = {};
     Object.keys(this.state).forEach(key => {
       const handle = this.state[key];
-      socialMedia[key] = handle.startsWith("@") ? cleanHandle(handle) : handle;
+      if (handle && handle.trim().length) {
+        socialMedia[key] = handle.startsWith("@")
+          ? cleanHandle(handle)
+          : handle;
+      }
     });
     this.props.accountUpdateSocialMedia(socialMedia);
     this.onClose();
