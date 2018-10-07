@@ -28,8 +28,8 @@ class Router extends Component {
               this.props.metaConnectionShow({
                 request: true,
                 name: queryParams.name,
-                socialMedia: queryParams.social
-                  ? JSON.parse(queryParams.social)
+                socialMedia: queryParams.socialMedia
+                  ? JSON.parse(queryParams.socialMedia)
                   : {}
               });
               if (name) {

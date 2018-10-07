@@ -1,4 +1,4 @@
-import { getLocal, updateLocal } from "../helpers/localstorage";
+import { updateLocal } from "../helpers/localstorage";
 import { accountUpdateMetaConnections } from "./_account";
 
 // -- Constants ------------------------------------------------------------- //
@@ -10,15 +10,15 @@ const METACONNECTION_HIDE = "metaConnection/METACONNECTION_HIDE";
 
 const localStorageKey = "METACONNECTIONS";
 
-export const metaConnectionShow = _metaConnection => dispatch => {
-  let metaConnection = _metaConnection;
-  if (!_metaConnection.request) {
-    const previousMetaConnections = getLocal(localStorageKey);
-    metaConnection = previousMetaConnections[_metaConnection.name];
-    metaConnection.request = false;
-  }
-  const { name, socialMedia } = metaConnection;
-  dispatch({ type: METACONNECTION_SHOW, payload: { name, socialMedia } });
+export const metaConnectionShow = ({
+  request,
+  name,
+  socialMedia
+}) => dispatch => {
+  dispatch({
+    type: METACONNECTION_SHOW,
+    payload: { request, name, socialMedia }
+  });
 };
 
 export const metaConnectionHide = () => dispatch => {

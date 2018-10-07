@@ -110,6 +110,7 @@ const StyledMetaConnectionsList = styled.div``;
 const StyledMetaConnectionsItem = styled.div`
   margin: 10px auto;
   text-align: left;
+  cursor: pointer;
 `;
 
 let intervalId = null;
@@ -140,7 +141,6 @@ class Dashboard extends Component {
     );
     let uri = `${baseUrl}?name=${name}&socialMedia=${socialMedia}&t=${Date.now()}`;
     this.setState({ uri });
-    console.log(this.state.uri);
   };
   stopInterval = () => clearInterval(intervalId);
   componetWillUnmount() {
@@ -149,22 +149,26 @@ class Dashboard extends Component {
   toggleScanner = () => this.setState({ scan: !this.state.scan });
 
   onScan = string => {
-    console.log("onScan string", string);
     const pathEnd =
       string.indexOf("?") !== -1 ? string.indexOf("?") : undefined;
     const queryString = pathEnd ? string.substring(pathEnd) : "";
     let queryParams = parseQueryParams(queryString);
     if (Object.keys(queryParams).length) {
-      this.props.metaConnectionShow({
+      const metaConnection = {
         request: true,
         name: queryParams.name,
-        socialMedia: queryParams.social ? JSON.parse(queryParams.social) : {}
-      });
-      window.browserHistory.push("/meta-connection");
+        socialMedia: queryParams.socialMedia
+          ? JSON.parse(queryParams.socialMedia)
+          : {}
+      };
+      this.openMetaConnection(metaConnection);
     }
     this.toggleScanner();
   };
-
+  openMetaConnection(metaConnection) {
+    this.props.metaConnectionShow(metaConnection);
+    window.browserHistory.push("/meta-connection");
+  }
   render() {
     const { name, socialMedia } = this.props;
     const qrcodeScale =
@@ -188,33 +192,57 @@ class Dashboard extends Component {
               ) : (
                 <StyledSocialMedia>
                   {!!socialMedia.twitter && (
-                    <a href={`https://twitter.com/${socialMedia.twitter}`}>
+                    <a
+                      href={`https://twitter.com/${socialMedia.twitter}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <StyledSocialMediaIcon icon={twitter} />
                     </a>
                   )}
                   {!!socialMedia.telegram && (
-                    <a href={`https://t.me/${socialMedia.telegram}`}>
+                    <a
+                      href={`https://t.me/${socialMedia.telegram}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <StyledSocialMediaIcon icon={telegram} />
                     </a>
                   )}
                   {!!socialMedia.github && (
-                    <a href={`https://github.com/${socialMedia.github}`}>
+                    <a
+                      href={`https://github.com/${socialMedia.github}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <StyledSocialMediaIcon icon={github} />
                     </a>
                   )}
 
                   {!!socialMedia.linkedin && (
-                    <a href={`https://linkedin.com/in/${socialMedia.linkedin}`}>
+                    <a
+                      href={`https://linkedin.com/in/${socialMedia.linkedin}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <StyledSocialMediaIcon icon={linkedin} />
                     </a>
                   )}
                   {!!socialMedia.email && (
-                    <a href={`mailto:${socialMedia.email}`}>
+                    <a
+                      href={`mailto:${socialMedia.email}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <StyledSocialMediaIcon icon={email} />
                     </a>
                   )}
                   {!!socialMedia.phone && (
-                    <a href={`tel:${socialMedia.phone}`}>
+                    <a
+                      href={`tel:${socialMedia.phone}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <StyledSocialMediaIcon icon={phone} />
                     </a>
                   )}
@@ -247,7 +275,16 @@ class Dashboard extends Component {
             {Object.keys(this.props.metaConnections).length ? (
               <StyledMetaConnectionsList>
                 {Object.keys(this.props.metaConnections).map(key => (
-                  <StyledMetaConnectionsItem>
+                  <StyledMetaConnectionsItem
+                    onClick={() => {
+                      const metaConnection = {
+                        request: false,
+                        name: this.props.metaConnections[key].name,
+                        socialMedia: this.props.metaConnections[key].socialMedia
+                      };
+                      this.openMetaConnection(metaConnection);
+                    }}
+                  >
                     {formatHandle(key)}
                   </StyledMetaConnectionsItem>
                 ))}

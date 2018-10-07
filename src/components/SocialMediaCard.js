@@ -42,18 +42,14 @@ const StyledSocialMedia = styled.div`
   flex-direction: column;
   & a {
     display: flex;
-  }
-  & a > * {
-    margin-left: 10px !important;
-  }
-  & a:first-child > div {
-    margin-left: 0 !important;
+    margin: 6px 0;
   }
 `;
 
 const StyledSocialMediaIcon = styled.div`
   width: 20px;
   height: 20px;
+  margin-right: 10px;
   mask: ${({ icon }) => `url(${icon}) center no-repeat`};
   mask-size: 90%;
   background-color: ${({ color }) => `rgb(${colors[color]})`};
@@ -72,38 +68,62 @@ const SocialMediaCard = ({ name, socialMedia, ...props }) => (
         <StyledSocialMediaWrapper>
           <StyledSocialMedia>
             {!!socialMedia.twitter && (
-              <a href={`https://twitter.com/${socialMedia.twitter}`}>
+              <a
+                href={`https://twitter.com/${socialMedia.twitter}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <StyledSocialMediaIcon color="dark" icon={twitter} />
                 <p>{formatHandle(socialMedia.twitter)}</p>
               </a>
             )}
             {!!socialMedia.telegram && (
-              <a href={`https://t.me/${socialMedia.telegram}`}>
+              <a
+                href={`https://t.me/${socialMedia.telegram}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <StyledSocialMediaIcon color="dark" icon={telegram} />
                 <p>{formatHandle(socialMedia.telegram)}</p>
               </a>
             )}
             {!!socialMedia.github && (
-              <a href={`https://github.com/${socialMedia.github}`}>
+              <a
+                href={`https://github.com/${socialMedia.github}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <StyledSocialMediaIcon color="dark" icon={github} />
                 <p>{formatHandle(socialMedia.github)}</p>
               </a>
             )}
 
             {!!socialMedia.linkedin && (
-              <a href={`https://linkedin.com/in/${socialMedia.linkedin}`}>
+              <a
+                href={`https://linkedin.com/in/${socialMedia.linkedin}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <StyledSocialMediaIcon color="dark" icon={linkedin} />
                 <p>{formatHandle(socialMedia.linkedin)}</p>
               </a>
             )}
             {!!socialMedia.email && (
-              <a href={`mailto:${socialMedia.email}`}>
+              <a
+                href={`mailto:${socialMedia.email}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <StyledSocialMediaIcon color="dark" icon={email} />
                 <p>{formatHandle(socialMedia.email)}</p>
               </a>
             )}
             {!!socialMedia.phone && (
-              <a href={`tel:${socialMedia.phone}`}>
+              <a
+                href={`tel:${socialMedia.phone}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <StyledSocialMediaIcon color="dark" icon={phone} />
                 <p>{formatHandle(socialMedia.phone)}</p>
               </a>

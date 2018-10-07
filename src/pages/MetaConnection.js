@@ -107,16 +107,6 @@ class EditSocialMedia extends Component {
               <StyledButton
                 outline
                 color="red"
-                onClick={this.props.metaConnectionHide}
-              >
-                {"Go Back"}
-              </StyledButton>
-            </StyledActions>
-          ) : (
-            <StyledActions>
-              <StyledButton
-                outline
-                color="red"
                 onClick={this.props.metaConnectionReject}
               >
                 {"Reject"}
@@ -127,6 +117,16 @@ class EditSocialMedia extends Component {
                 onClick={this.props.metaConnectionApprove}
               >
                 {"Approve"}
+              </StyledButton>
+            </StyledActions>
+          ) : (
+            <StyledActions>
+              <StyledButton
+                outline
+                color="red"
+                onClick={this.props.metaConnectionHide}
+              >
+                {"Go Back"}
               </StyledButton>
             </StyledActions>
           )}
