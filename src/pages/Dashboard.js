@@ -140,8 +140,6 @@ class Dashboard extends Component {
     const qrcodeScale =
       window.innerWidth < 470 ? (window.innerWidth < 370 ? 3 : 4) : 5;
 
-    console.log("!Object.keys(socialMedia).length", socialMedia);
-
     return (
       <Base
         scan={this.state.scan}
