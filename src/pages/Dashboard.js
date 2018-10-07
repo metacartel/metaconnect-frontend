@@ -5,10 +5,8 @@ import Base from "../layouts/base";
 import Link from "../components/Link";
 import Card from "../components/Card";
 import Column from "../components/Column";
-import AddButton from "../components/AddButton";
 import QRCodeDisplay from "../components/QRCodeDisplay";
 import camera from "../assets/camera.svg";
-
 import twitter from "../assets/twitter.svg";
 import telegram from "../assets/telegram.svg";
 import github from "../assets/github.svg";
@@ -66,22 +64,29 @@ const StyledProfile = styled.div`
   text-align: left;
 `;
 
+const StyledName = styled.h3`
+  & span {
+    margin-right: 12px;
+  }
+`;
+
 const StyledSocialMediaWrapper = styled.div`
   margin: 8px 0;
 `;
 
 const StyledSocialMedia = styled.div`
   display: flex;
-`;
-
-const StyledAddButton = styled(AddButton)`
-  margin-left: 10px;
+  & a > * {
+    margin-left: 10px !important;
+  }
+  & a:first-child > div {
+    margin-left: 0 !important;
+  }
 `;
 
 const StyledSocialMediaIcon = styled.div`
   width: 20px;
   height: 20px;
-  margin-left: 10px;
   background-image: ${({ icon }) => `url(${icon})`};
   background-size: contain;
   background-repeat: no-repeat;
@@ -94,7 +99,6 @@ let test =
 
 class Dashboard extends Component {
   state = {
-    metaconnections: 0,
     scan: false,
     uri: ""
   };
@@ -125,13 +129,14 @@ class Dashboard extends Component {
 
   render() {
     const { name, socialMedia } = this.props;
-    let noSocialMedia = false;
+    let noSocialMedia = true;
+    console.log("socialMedia", socialMedia);
     Object.keys(socialMedia).forEach(key => {
-      if (!noSocialMedia) {
+      if (noSocialMedia) {
         noSocialMedia = !socialMedia[key];
       }
     });
-
+    console.log("noSocialMedia", noSocialMedia);
     return (
       <Base
         scan={this.state.scan}
@@ -140,7 +145,10 @@ class Dashboard extends Component {
       >
         <StyledWrapper maxWidth={400}>
           <StyledProfile>
-            <h3>{`👩‍🚀 @${name}`}</h3>
+            <StyledName>
+              <span>{`👩‍🚀`}</span>
+              {`@${name}`}
+            </StyledName>
             <StyledSocialMediaWrapper>
               {noSocialMedia ? (
                 <Link to="/edit-social-media">{"Add Social Media"}</Link>
@@ -178,7 +186,7 @@ class Dashboard extends Component {
                     </a>
                   )}
                   <Link to="/edit-social-media">
-                    <StyledAddButton size={20} />
+                    <span>{"edit"}</span>
                   </Link>
                 </StyledSocialMedia>
               )}
@@ -186,7 +194,7 @@ class Dashboard extends Component {
           </StyledProfile>
           <StyledContainer>
             <StyledMetaConnections>
-              {this.state.metaconnections}
+              {this.props.metaConnections}
               <span>{` ❤️`}</span>
             </StyledMetaConnections>
             <StyledCameraButton onClick={this.toggleScanner} />
@@ -209,7 +217,8 @@ class Dashboard extends Component {
 
 const reduxProps = ({ account }) => ({
   name: account.name,
-  socialMedia: account.socialMedia
+  socialMedia: account.socialMedia,
+  metaConnections: account.metaConnections
 });
 
 export default connect(

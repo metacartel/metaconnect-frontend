@@ -13,12 +13,8 @@ import { accountUpdateSocialMedia } from "../reducers/_account";
 import { formatHandle, cleanHandle } from "../helpers/utilities";
 
 const StyledWrapper = styled(Column)`
-  width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  padding: 20px;
 `;
 
 const StyledProfile = styled.div`
@@ -28,6 +24,12 @@ const StyledProfile = styled.div`
   flex-direction: column;
   text-align: left;
   margin-bottom: 50px;
+`;
+
+const StyledName = styled.h3`
+  & span {
+    margin-right: 12px;
+  }
 `;
 
 const StyledForm = styled(Form)`
@@ -75,7 +77,10 @@ class EditSocialMedia extends Component {
     <Base>
       <StyledWrapper maxWidth={400}>
         <StyledProfile>
-          <h3>{`👩‍🚀 @${this.props.name}`}</h3>
+          <StyledName>
+            <span>{`👩‍🚀`}</span>
+            {`@${this.props.name}`}
+          </StyledName>
         </StyledProfile>
 
         <Card>

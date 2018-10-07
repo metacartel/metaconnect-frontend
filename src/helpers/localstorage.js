@@ -17,7 +17,7 @@ export const saveLocal = (key = "", data = {}) => {
 export const getLocal = (key = "") => {
   const data = localStorage.getItem(key)
     ? JSON.parse(localStorage.getItem(key))
-    : null;
+    : {};
   return data;
 };
 
@@ -34,8 +34,8 @@ export const removeLocal = (key = "") => localStorage.removeItem(key);
  * @param  {Array}  [data=[]]
  * @return {Void}
  */
-export const updateLocal = (key = "", data = []) => {
-  const localData = getLocal(key) || [];
-  const mergedData = [...localData, ...data];
+export const updateLocal = (key = "", data = {}) => {
+  const localData = getLocal(key) || {};
+  const mergedData = { ...localData, ...data };
   saveLocal(key, mergedData);
 };
