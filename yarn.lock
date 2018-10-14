@@ -3369,6 +3369,11 @@ eth-lib@0.2.7:
     elliptic "^6.4.0"
     xhr-request-promise "^0.1.2"
 
+eth-parse-uri@^0.6.9:
+  version "0.6.9"
+  resolved "https://registry.yarnpkg.com/eth-parse-uri/-/eth-parse-uri-0.6.9.tgz#2f481b95d062fb8ad5d92cccf10e63e5c4162344"
+  integrity sha512-6QWqTi5/hfOj7Ii5yxbYSIbsoT+SAS1+YQ1ze+VZ8JnZKPzmcu67wtDgY+YmLh+REZQIun1E7kd45JeSH/HDmA==
+
 ethereum-ens@^0.7.4:
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/ethereum-ens/-/ethereum-ens-0.7.4.tgz#ed0584ec65f0f3a4072fd61234d3c9580b70c2dc"
@@ -5423,6 +5428,13 @@ js-tokens@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
   integrity sha1-mGbfOVECEw449/mWvOtlRDIJwls=
+
+js-walletconnect-core@^0.7.17:
+  version "0.7.17"
+  resolved "https://registry.yarnpkg.com/js-walletconnect-core/-/js-walletconnect-core-0.7.17.tgz#590f7e1cd1380de4b757c3a873f319db52a5be62"
+  integrity sha512-+MOac9q6upV+pHDXEX97RZcCgkDXQrNzovYRxPXeszhtTcSkg3lkrbPb2KE2LsnAccIuZ8PKNLhzYTmzXrEwSw==
+  dependencies:
+    eth-parse-uri "^0.6.9"
 
 js-yaml@^3.12.0, js-yaml@^3.4.3, js-yaml@^3.7.0, js-yaml@^3.9.1:
   version "3.12.0"
@@ -7977,6 +7989,13 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
+rn-walletconnect-wallet@^0.7.17:
+  version "0.7.17"
+  resolved "https://registry.yarnpkg.com/rn-walletconnect-wallet/-/rn-walletconnect-wallet-0.7.17.tgz#7549ece5eb519678bfe42e328060f07dc05c7439"
+  integrity sha512-q9f8oS6mT6jmWJm7Ubv2S3dAi81w7mrW8Hg4rxl9CijJgV1297mp2DpGw2H2CkNSFZzw6sDSJUvS5tcJrRyz/A==
+  dependencies:
+    js-walletconnect-core "^0.7.17"
+
 rtcpeerconnection-shim@^1.2.14:
   version "1.2.14"
   resolved "https://registry.yarnpkg.com/rtcpeerconnection-shim/-/rtcpeerconnection-shim-1.2.14.tgz#67903d6f7b7bf508d6d1e4791de3e3b49c3754c0"
@@ -9338,6 +9357,13 @@ walker@~1.0.5:
   integrity sha1-L3+bj9ENZ3JisYqITijRlhjgKPs=
   dependencies:
     makeerror "1.0.x"
+
+walletconnect@^0.7.17:
+  version "0.7.17"
+  resolved "https://registry.yarnpkg.com/walletconnect/-/walletconnect-0.7.17.tgz#c74614a01d7a6168082b89c63669a28f08c8c0bb"
+  integrity sha512-LvwMEPe/13ODmaEmJqXG8BWp9j0TuRPpBkcfXnGl+SVWk92Iu1nef95/4oA3KP8LZKCP5eTNJ7sLMN1U+pq3dw==
+  dependencies:
+    js-walletconnect-core "^0.7.17"
 
 warning@^3.0.0:
   version "3.0.0"
