@@ -31,12 +31,9 @@ const StyledQRCodeWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const StyledQRCodeDisplayWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
 `;
 
 const StyledContainer = styled.div`
@@ -251,15 +248,11 @@ class Dashboard extends Component {
                 <QRCodeScanner
                   onValidate={this.onQRCodeValidate}
                   onError={this.onQRCodeError}
-                  onQRCodeScan={this.onQRCodeScan}
+                  onScan={this.onQRCodeScan}
                   onClose={this.toggleQRCodeScanner}
                 />
               ) : (
-                this.state.uri && (
-                  <StyledQRCodeDisplayWrapper>
-                    <QRCodeDisplay scale={qrcodeScale} data={this.state.uri} />
-                  </StyledQRCodeDisplayWrapper>
-                )
+                <QRCodeDisplay scale={qrcodeScale} data={this.state.uri} />
               )}
             </StyledQRCodeWrapper>
           </Card>
