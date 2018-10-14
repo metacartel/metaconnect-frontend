@@ -6,6 +6,7 @@ import Link from "../components/Link";
 import Card from "../components/Card";
 import Column from "../components/Column";
 import QRCodeDisplay from "../components/QRCodeDisplay";
+import P2PNetwork from "../components/P2PNetwork";
 import camera from "../assets/camera.svg";
 import twitter from "../assets/twitter.svg";
 import telegram from "../assets/telegram.svg";
@@ -105,6 +106,11 @@ const StyledMetaConnectionsListWrapper = styled.div`
   margin: 20px auto;
 `;
 
+const StyledP2PNetworkWrapper = styled.div`
+  width: 100%;
+  margin: 20px auto;
+`;
+
 const StyledMetaConnectionsList = styled.div``;
 
 const StyledMetaConnectionsItem = styled.div`
@@ -115,9 +121,11 @@ const StyledMetaConnectionsItem = styled.div`
 
 let intervalId = null;
 
+
+
 let baseUrl =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
-    ? "http://localhost:3000"
+    ? "http://"+window.location.host
     : "https://metaconnect.me";
 
 class Dashboard extends Component {
@@ -265,9 +273,14 @@ class Dashboard extends Component {
           </StyledContainer>
           <Card>
             {this.state.uri && (
-              <StyledQRCodeWrapper>
-                <QRCodeDisplay scale={qrcodeScale} data={this.state.uri} />
-              </StyledQRCodeWrapper>
+              <div>
+                <StyledQRCodeWrapper>
+                  <QRCodeDisplay scale={qrcodeScale} data={this.state.uri} />
+                </StyledQRCodeWrapper>
+                {process.env.NODE_ENV === "development"?<div style={{fontSize:10,marginBottom:20}}>
+                  <a href={this.state.uri}>{this.state.uri}</a>
+                </div>:""}
+              </div>
             )}
           </Card>
           <StyledMetaConnectionsListWrapper>
@@ -295,6 +308,12 @@ class Dashboard extends Component {
               </StyledMetaConnectionsItem>
             )}
           </StyledMetaConnectionsListWrapper>
+          <StyledP2PNetworkWrapper>
+            <h2>P2P Network</h2>
+            <P2PNetwork
+              name={this.props.name}
+            />
+          </StyledP2PNetworkWrapper>
         </StyledWrapper>
       </Base>
     );
