@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import Wrapper from "../components/Wrapper";
 import Column from "../components/Column";
 import Notification from "../components/Notification";
-import QRCodeScanner from "../components/QRCodeScanner";
 import { responsive } from "../styles";
 
 const StyledLayout = styled.div`
@@ -24,21 +23,10 @@ const StyledContent = styled(Wrapper)`
   padding-top: 100px;
   @media screen and (${responsive.sm.max}) {
     padding-top: 0;
-    ${"" /* align-items: center; */};
   }
 `;
 
 class Base extends Component {
-  onQRCodeError = () => {};
-
-  onQRCodeValidate = data => {
-    let result = null;
-    if (data.startsWith("http:") || data.startsWith("https:")) {
-      result = data;
-    }
-    return { data, result, onError: this.onQRCodeError };
-  };
-
   render() {
     return (
       <StyledLayout>
@@ -46,14 +34,6 @@ class Base extends Component {
           <StyledContent>{this.props.children}</StyledContent>
         </Column>
         <Notification />
-        {this.props.scan && (
-          <QRCodeScanner
-            onValidate={this.onQRCodeValidate}
-            onError={this.onQRCodeError}
-            onScan={this.props.onScan}
-            onClose={this.props.toggleScanner}
-          />
-        )}
       </StyledLayout>
     );
   }
