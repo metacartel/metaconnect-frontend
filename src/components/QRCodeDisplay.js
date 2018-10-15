@@ -1,46 +1,53 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import QRCode from "qrcode";
+import qrImage from "qr-image";
 
 const StyledWrapper = styled.div`
   width: 100%;
-  margin: 10px auto;
+  padding: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
+  & svg {
+    width: 100%;
+  }
 `;
 
 class QRCodeDisplay extends Component {
+  state = {
+    img: ""
+  };
+
   componentDidMount() {
-    QRCode.toCanvas(
-      this.canvas,
-      this.props.data,
-      {
-        errorCorrectionLevel: this.props.errorCorrectionLevel,
-        scale: this.props.scale
-      },
-      error => {
-        if (error) console.error(error);
-      }
-    );
+    this.updateQRCodeImage();
   }
-  render = () => (
-    <StyledWrapper {...this.props}>
-      <canvas ref={c => (this.canvas = c)} />
-    </StyledWrapper>
-  );
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.data !== this.props.data) {
+      this.setState({ data: this.props.data });
+      this.updateQRCodeImage();
+    }
+  }
+
+  updateQRCodeImage() {
+    this.setState({ img: "" });
+    if (this.props.data) {
+      const img = qrImage.imageSync(this.props.data, { type: "svg" });
+      this.setState({ img });
+    }
+  }
+  render = () =>
+    this.state.img ? (
+      <StyledWrapper
+        dangerouslySetInnerHTML={{ __html: this.state.img }}
+        {...this.props}
+      />
+    ) : null;
 }
 
 QRCodeDisplay.propTypes = {
-  data: PropTypes.string.isRequired,
-  errorCorrectionLevel: PropTypes.string,
-  scale: PropTypes.number
-};
-
-QRCodeDisplay.defaultProps = {
-  errorCorrectionLevel: "L",
-  scale: 7
+  data: PropTypes.string.isRequired
 };
 
 export default QRCodeDisplay;

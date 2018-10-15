@@ -2,21 +2,20 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import Base from "../layouts/base";
-import Link from "../components/Link";
 import Card from "../components/Card";
+import Icon from "../components/Icon";
 import Column from "../components/Column";
+import SocialMediaList from "../components/SocialMediaList";
+import QRCodeScanner from "../components/QRCodeScanner";
 import QRCodeDisplay from "../components/QRCodeDisplay";
 import P2PNetwork from "../components/P2PNetwork";
 import camera from "../assets/camera.svg";
-import twitter from "../assets/twitter.svg";
-import telegram from "../assets/telegram.svg";
-import github from "../assets/github.svg";
-import linkedin from "../assets/linkedin.svg";
-import phone from "../assets/phone.svg";
-import email from "../assets/email.svg";
+import qrcode from "../assets/qrcode.svg";
 import { responsive } from "../styles";
+import { notificationShow } from "../reducers/_notification";
 import { metaConnectionShow } from "../reducers/_metaConnection";
 import { formatHandle, parseQueryParams } from "../helpers/utilities";
+import { colors, transitions } from "../styles";
 
 const StyledWrapper = styled(Column)`
   padding: 20px;
@@ -29,17 +28,13 @@ const StyledWrapper = styled(Column)`
 `;
 
 const StyledQRCodeWrapper = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const StyledCameraButton = styled.div`
-  width: 40px;
-  height: 40px;
-  background-image: url(${camera});
-  background-size: contain;
-  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
 `;
 
 const StyledContainer = styled.div`
@@ -79,28 +74,6 @@ const StyledName = styled.h3`
   }
 `;
 
-const StyledSocialMediaWrapper = styled.div`
-  margin: 8px 0;
-`;
-
-const StyledSocialMedia = styled.div`
-  display: flex;
-  & a > * {
-    margin-left: 10px !important;
-  }
-  & a:first-child > div {
-    margin-left: 0 !important;
-  }
-`;
-
-const StyledSocialMediaIcon = styled.div`
-  width: 20px;
-  height: 20px;
-  background-image: ${({ icon }) => `url(${icon})`};
-  background-size: contain;
-  background-repeat: no-repeat;
-`;
-
 const StyledMetaConnectionsListWrapper = styled.div`
   width: 100%;
   margin: 20px auto;
@@ -119,7 +92,52 @@ const StyledMetaConnectionsItem = styled.div`
   cursor: pointer;
 `;
 
-let intervalId = null;
+const StyledTabsWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const StyledIcon = styled(Icon)``;
+
+const StyledTab = styled.div`
+  transition: ${transitions.base};
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70px;
+  margin: 4px;
+  border-radius: 20px;
+  border: ${({ active }) =>
+    active
+      ? `1px solid rgb(${colors.dark})`
+      : `1px solid rgb(${colors.darkGrey})`};
+
+  & ${StyledIcon} {
+    background-color: ${({ active }) =>
+      active ? `rgb(${colors.dark})` : `rgb(${colors.darkGrey})`};
+  }
+
+  & p {
+    color: ${({ active }) =>
+      active ? `rgb(${colors.dark})` : `rgb(${colors.darkGrey})`};
+  }
+
+  &:hover {
+    border: 1px solid rgba(${colors.dark}, 0.7);
+
+    & ${StyledIcon} {
+      background-color: rgba(${colors.dark}, 0.7);
+    }
+
+    & p {
+      color: rgba(${colors.dark}, 0.7);
+    }
+  }
+`;
 
 
 
@@ -133,14 +151,11 @@ class Dashboard extends Component {
     scan: false,
     uri: ""
   };
+
   componentDidMount() {
     this.updateURI();
-    this.startInterval();
   }
-  startInterval = () => {
-    const self = this;
-    intervalId = setInterval(self.updateURI, 5000);
-  };
+
   updateURI = () => {
     this.setState({ uri: "" });
     const name = this.props.name;
@@ -150,13 +165,27 @@ class Dashboard extends Component {
     let uri = `${baseUrl}?name=${name}&socialMedia=${socialMedia}&t=${Date.now()}`;
     this.setState({ uri });
   };
-  stopInterval = () => clearInterval(intervalId);
-  componetWillUnmount() {
-    this.clearInterval();
-  }
-  toggleScanner = () => this.setState({ scan: !this.state.scan });
 
-  onScan = string => {
+  openMetaConnection(metaConnection) {
+    this.props.metaConnectionShow(metaConnection);
+    window.browserHistory.push("/meta-connection");
+  }
+
+  toggleQRCodeScanner = () => this.setState({ scan: !this.state.scan });
+
+  onQRCodeError = () => {
+    this.props.notificationShow("Something went wrong!", true);
+  };
+
+  onQRCodeValidate = data => {
+    let result = null;
+    if (data.startsWith("http:") || data.startsWith("https:")) {
+      result = data;
+    }
+    return { data, result, onError: this.onQRCodeError };
+  };
+
+  onQRCodeScan = string => {
     const pathEnd =
       string.indexOf("?") !== -1 ? string.indexOf("?") : undefined;
     const queryString = pathEnd ? string.substring(pathEnd) : "";
@@ -171,117 +200,72 @@ class Dashboard extends Component {
       };
       this.openMetaConnection(metaConnection);
     }
-    this.toggleScanner();
+    this.toggleQRCodeScanner();
   };
-  openMetaConnection(metaConnection) {
-    this.props.metaConnectionShow(metaConnection);
-    window.browserHistory.push("/meta-connection");
-  }
+
   render() {
-    const { name, socialMedia } = this.props;
     const qrcodeScale =
       window.innerWidth < 470 ? (window.innerWidth < 370 ? 3 : 4) : 5;
 
     return (
-      <Base
-        scan={this.state.scan}
-        toggleScanner={this.toggleScanner}
-        onScan={this.onScan}
-      >
+      <Base>
         <StyledWrapper maxWidth={400}>
           <StyledProfile>
             <StyledName>
               <span>{`👩‍🚀`}</span>
-              {`@${name}`}
+              {`@${this.props.name}`}
             </StyledName>
-            <StyledSocialMediaWrapper>
-              {!Object.keys(socialMedia).length ? (
-                <Link to="/edit-social-media">{"Add Social Media"}</Link>
-              ) : (
-                <StyledSocialMedia>
-                  {!!socialMedia.twitter && (
-                    <a
-                      href={`https://twitter.com/${socialMedia.twitter}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <StyledSocialMediaIcon icon={twitter} />
-                    </a>
-                  )}
-                  {!!socialMedia.telegram && (
-                    <a
-                      href={`https://t.me/${socialMedia.telegram}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <StyledSocialMediaIcon icon={telegram} />
-                    </a>
-                  )}
-                  {!!socialMedia.github && (
-                    <a
-                      href={`https://github.com/${socialMedia.github}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <StyledSocialMediaIcon icon={github} />
-                    </a>
-                  )}
-
-                  {!!socialMedia.linkedin && (
-                    <a
-                      href={`https://linkedin.com/in/${socialMedia.linkedin}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <StyledSocialMediaIcon icon={linkedin} />
-                    </a>
-                  )}
-                  {!!socialMedia.email && (
-                    <a
-                      href={`mailto:${socialMedia.email}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <StyledSocialMediaIcon icon={email} />
-                    </a>
-                  )}
-                  {!!socialMedia.phone && (
-                    <a
-                      href={`tel:${socialMedia.phone}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <StyledSocialMediaIcon icon={phone} />
-                    </a>
-                  )}
-                  <Link to="/edit-social-media">
-                    <span>{"edit"}</span>
-                  </Link>
-                </StyledSocialMedia>
-              )}
-            </StyledSocialMediaWrapper>
+            <SocialMediaList socialMedia={this.props.socialMedia} />
           </StyledProfile>
           <StyledContainer>
             <StyledMetaConnections>
               {Object.keys(this.props.metaConnections).length || 0}
               <span>{` ❤️`}</span>
             </StyledMetaConnections>
-            <StyledCameraButton onClick={this.toggleScanner} />
-          </StyledContainer>
-          <StyledContainer>
             <StyledParagrah>{`Scan to get more ❤️`}</StyledParagrah>
           </StyledContainer>
           <Card>
-            {this.state.uri && (
-              <div>
-                <StyledQRCodeWrapper>
-                  <QRCodeDisplay scale={qrcodeScale} data={this.state.uri} />
-                </StyledQRCodeWrapper>
+            <StyledTabsWrapper>
+              <StyledTab
+                active={!this.state.scan}
+                onClick={this.toggleQRCodeScanner}
+              >
+                <StyledIcon
+                  icon={qrcode}
+                  size={20}
+                  color={"dark"}
+                  onClick={this.toggleQRCodeScanner}
+                />
+                <p>QR Code</p>
+              </StyledTab>
+              <StyledTab
+                active={this.state.scan}
+                onClick={this.toggleQRCodeScanner}
+              >
+                <StyledIcon
+                  icon={camera}
+                  size={20}
+                  color={"dark"}
+                  onClick={this.toggleQRCodeScanner}
+                />
+                <p>Scan</p>
+              </StyledTab>
+            </StyledTabsWrapper>
+            <StyledQRCodeWrapper>
+              {this.state.scan ? (
+                <QRCodeScanner
+                  onValidate={this.onQRCodeValidate}
+                  onError={this.onQRCodeError}
+                  onScan={this.onQRCodeScan}
+                  onClose={this.toggleQRCodeScanner}
+                />
+              ) : (
+                <QRCodeDisplay scale={qrcodeScale} data={this.state.uri} />
+              )}
                 {process.env.NODE_ENV === "development"?<div style={{fontSize:10,marginBottom:20}}>
                   <a href={this.state.uri}>{this.state.uri}</a>
                 </div>:""}
-              </div>
-            )}
+            </StyledQRCodeWrapper>
           </Card>
           <StyledMetaConnectionsListWrapper>
             <h2>Your MetaConnections</h2>
@@ -328,5 +312,5 @@ const reduxProps = ({ account }) => ({
 
 export default connect(
   reduxProps,
-  { metaConnectionShow }
+  { metaConnectionShow, notificationShow }
 )(Dashboard);
