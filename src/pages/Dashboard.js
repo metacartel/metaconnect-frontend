@@ -8,6 +8,7 @@ import Column from "../components/Column";
 import SocialMediaList from "../components/SocialMediaList";
 import QRCodeScanner from "../components/QRCodeScanner";
 import QRCodeDisplay from "../components/QRCodeDisplay";
+import P2PNetwork from "../components/P2PNetwork";
 import camera from "../assets/camera.svg";
 import qrcode from "../assets/qrcode.svg";
 import { responsive } from "../styles";
@@ -78,6 +79,11 @@ const StyledMetaConnectionsListWrapper = styled.div`
   margin: 20px auto;
 `;
 
+const StyledP2PNetworkWrapper = styled.div`
+  width: 100%;
+  margin: 20px auto;
+`;
+
 const StyledMetaConnectionsList = styled.div``;
 
 const StyledMetaConnectionsItem = styled.div`
@@ -133,9 +139,11 @@ const StyledTab = styled.div`
   }
 `;
 
+
+
 let baseUrl =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
-    ? "http://localhost:3000"
+    ? "http://"+window.location.host
     : "https://metaconnect.me";
 
 class Dashboard extends Component {
@@ -254,6 +262,9 @@ class Dashboard extends Component {
               ) : (
                 <QRCodeDisplay scale={qrcodeScale} data={this.state.uri} />
               )}
+                {process.env.NODE_ENV === "development"?<div style={{fontSize:10,marginBottom:20}}>
+                  <a href={this.state.uri}>{this.state.uri}</a>
+                </div>:""}
             </StyledQRCodeWrapper>
           </Card>
           <StyledMetaConnectionsListWrapper>
@@ -281,6 +292,12 @@ class Dashboard extends Component {
               </StyledMetaConnectionsItem>
             )}
           </StyledMetaConnectionsListWrapper>
+          <StyledP2PNetworkWrapper>
+            <h2>P2P Network</h2>
+            <P2PNetwork
+              name={this.props.name}
+            />
+          </StyledP2PNetworkWrapper>
         </StyledWrapper>
       </Base>
     );
