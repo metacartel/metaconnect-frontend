@@ -9,10 +9,14 @@ import MetaConnection from "./pages/MetaConnection";
 import NotFound from "./pages/NotFound";
 import { metaConnectionShow } from "./reducers/_metaConnection";
 import { parseQueryParams } from "./helpers/utilities";
+import {createWallet} from "./helpers/wallet";
 
 class Router extends Component {
   componentDidMount() {
     window.browserHistory = this.context.router.history;
+    if (!localStorage.account) {
+      createWallet();
+    }
   }
 
   render = () => {

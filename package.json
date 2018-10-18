@@ -6,6 +6,7 @@
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
     "dapparatus": "^1.0.22",
+    "ethereumjs-wallet": "^0.6.2",
     "ethers": "^3.0.29",
     "prop-types": "^15.6.2",
     "qrcode": "^1.2.2",

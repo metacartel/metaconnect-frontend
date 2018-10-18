@@ -11,6 +11,13 @@ export const web3Instance = new Web3(
   new Web3.providers.HttpProvider(`https://mainnet.infura.io/`)
 );
 
+/**
+ * @desc web3 ropsten http instance
+ */
+export const web3RopstenInstance = new Web3(
+  new Web3.providers.HttpProvider(`https://ropsten.infura.io/`)
+);
+
 web3Instance.eth.getTransactionReceiptMined = getTransactionReceiptMined;
 
 /**
