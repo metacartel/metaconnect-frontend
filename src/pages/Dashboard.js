@@ -27,7 +27,7 @@ const StyledWrapper = styled(Column)`
   }
 `;
 
-const StyledQRCodeWrapper = styled.div`
+const StyledQRCodeWrapper = styled(Column)`
   position: relative;
   display: flex;
   justify-content: center;
@@ -35,6 +35,14 @@ const StyledQRCodeWrapper = styled.div`
   width: 100%;
   height: 100%;
   min-height: 360px;
+`;
+
+const StyledDevelopmentMonitor = styled.div`
+  width: 100%;
+  text-align: left;
+  word-break: break-word;
+  font-size: 12px;
+  padding: 16px;
 `;
 
 const StyledContainer = styled.div`
@@ -139,11 +147,9 @@ const StyledTab = styled.div`
   }
 `;
 
-
-
 let baseUrl =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
-    ? "http://"+window.location.host
+    ? "http://" + window.location.host
     : "https://metaconnect.me";
 
 class Dashboard extends Component {
@@ -262,9 +268,11 @@ class Dashboard extends Component {
               ) : (
                 <QRCodeDisplay scale={qrcodeScale} data={this.state.uri} />
               )}
-                {process.env.NODE_ENV === "development"?<div style={{fontSize:10,marginBottom:20}}>
+              {process.env.NODE_ENV === "development" && (
+                <StyledDevelopmentMonitor>
                   <a href={this.state.uri}>{this.state.uri}</a>
-                </div>:""}
+                </StyledDevelopmentMonitor>
+              )}
             </StyledQRCodeWrapper>
           </Card>
           <StyledMetaConnectionsListWrapper>
@@ -294,9 +302,7 @@ class Dashboard extends Component {
           </StyledMetaConnectionsListWrapper>
           <StyledP2PNetworkWrapper>
             <h2>P2P Network</h2>
-            <P2PNetwork
-              name={this.props.name}
-            />
+            <P2PNetwork name={this.props.name} />
           </StyledP2PNetworkWrapper>
         </StyledWrapper>
       </Base>
