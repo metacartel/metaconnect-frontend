@@ -210,20 +210,20 @@ class IPFSPubSubRoom extends Component {
 
 IPFSPubSubRoom.propTypes = {
   roomName: PropTypes.string.isRequired,
-  onMessage: PropTypes.func,
-  onSubcribed: PropTypes.func,
-  onDisconnect: PropTypes.func,
-  onPeerJoined: PropTypes.func,
-  onPeerLeft: PropTypes.func,
+  // onMessage: PropTypes.func,
+  // onSubcribed: PropTypes.func,
+  // onDisconnect: PropTypes.func,
+  // onPeerJoined: PropTypes.func,
+  // onPeerLeft: PropTypes.func,
   devMonitor: PropTypes.bool
 };
 
 IPFSPubSubRoom.defaultProps = {
-  onMessage: () => {},
-  onSubcribed: () => {},
-  onDisconnect: () => {},
-  onPeerJoined: () => {},
-  onPeerLeft: () => {},
+  // onMessage: () => {},
+  // onSubcribed: () => {},
+  // onDisconnect: () => {},
+  // onPeerJoined: () => {},
+  // onPeerLeft: () => {},
   devMonitor: false
 };
 

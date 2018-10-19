@@ -152,7 +152,7 @@ class Dashboard extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.ipfsConnected !== this.props.ipfsConnected) {
       console.log(
-        "[componentDidUpdate] ipfsConnected is",
+        "[Dashboard] componentDidUpdate ipfsConnected is",
         this.props.ipfsConnected
       );
       this.props.registerIpfsRoom({
@@ -173,15 +173,12 @@ class Dashboard extends Component {
     console.log("[Dashboard] sendMessage", this.props.sendMessage);
   };
 
-  onMessage = () => {
-    console.log(
-      "[Dashboard] onMessage this.props.ipfsConnected",
-      this.props.ipfsConnected
-    );
+  onMessage = message => {
+    console.log("[Dashboard] onMessage message", message.data.toString());
   };
 
   onPeerJoined = peer => {
-    console.log("onPeerJoined peer", peer);
+    console.log("[Dashboard] onPeerJoined peer", peer);
     this.props.sendMessage(peer, `Hey friend, my name is ${this.props.ipfsId}`);
   };
 
@@ -318,18 +315,14 @@ const reduxProps = ({ account }) => ({
   metaConnections: account.metaConnections
 });
 
-const WrappedDashboard = props => {
-  console.log("Dashboard.onConnect", Dashboard.onConnect);
-
-  return (
-    <IPFSPubSubRoom
-      roomName={`metaconnect`}
-      devMonitor={process.env.NODE_ENV === "development"}
-    >
-      <Dashboard {...props} />
-    </IPFSPubSubRoom>
-  );
-};
+const WrappedDashboard = props => (
+  <IPFSPubSubRoom
+    roomName={`metaconnect`}
+    devMonitor={process.env.NODE_ENV === "development"}
+  >
+    <Dashboard {...props} />
+  </IPFSPubSubRoom>
+);
 
 export default connect(
   reduxProps,
