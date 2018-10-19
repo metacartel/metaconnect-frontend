@@ -10,7 +10,8 @@ const styles = {
     top: "0",
     bottom: "0",
     right: "0",
-    left: "0"
+    left: "0",
+    zIndex: "10000000"
   },
   monitor: {
     background: "black",
@@ -34,9 +35,7 @@ const styles = {
   }
 };
 
-const IPFSPubSubRoomContext = React.createContext({});
-
-class IPFSPubSubRoomComponent extends Component {
+class IPFSPubSubRoom extends Component {
   state = {
     ipfs: null,
     room: null,
@@ -47,10 +46,12 @@ class IPFSPubSubRoomComponent extends Component {
   };
 
   componentDidMount() {
-    this.registerIpfsRoom();
+    this.initIpfs();
   }
+
   initIpfs = async () => {
     let ipfs;
+
     try {
       Room = require("ipfs-pubsub-room");
       IPFS = require("ipfs");
@@ -70,54 +71,75 @@ class IPFSPubSubRoomComponent extends Component {
     } catch (err) {
       throw err;
     }
+
     this.setState({ ipfs });
-  };
-  registerIpfsRoom = async () => {
-    const { roomName, monitor } = this.props;
 
-    await this.initIpfs();
-
-    if (monitor) this.updateMonitorLogs("connected!");
-    this.setState({ ipfsConnected: true });
-
-    const { ipfs } = this.state;
+    const { devMonitor } = this.props;
 
     ipfs.on("ready", () => {
+      if (devMonitor) this.updateMonitorLogs("connected!");
+      this.setState({ ipfsConnected: true });
+
       ipfs.id((err, info) => {
         if (err) {
           throw err;
         }
         const ipfsId = info.id;
-        if (monitor) this.updateMonitorLogs(`connected as ${ipfsId}`);
+        if (devMonitor) this.updateMonitorLogs(`connected as ${ipfsId}`);
         this.registerNodeId(ipfsId);
       });
+    });
+  };
 
-      const room = Room(ipfs, roomName);
-      this.setState({ room });
+  registerIpfsRoom = async ({
+    onMessage = () => {},
+    onSubcribed = () => {},
+    onDisconnect = () => {},
+    onPeerJoined = () => {},
+    onPeerLeft = () => {}
+  }) => {
+    const { roomName, devMonitor } = this.props;
 
-      room.on("peer joined", peer => {
-        if (monitor) this.updateMonitorLogs(`joined: ${peer}`);
-        this.addPeer(peer);
-      });
+    console.log("[IPFSPubSubRoom] registerIpfsRoom this.props", this.props);
 
-      room.on("peer left", peer => {
-        if (monitor) this.updateMonitorLogs(`left: ${peer}`);
-        this.removePeer(peer);
-      });
+    const { ipfs } = this.state;
+    const room = Room(ipfs, roomName);
+    this.setState({ room });
 
-      room.on("subscribed", () => {
-        if (monitor) this.updateMonitorLogs("subscribed!");
-      });
+    room.on("peer joined", peer => {
+      if (devMonitor) this.updateMonitorLogs(`joined: ${peer}`);
+      this.addPeer(peer);
+      onPeerJoined(peer);
+    });
 
-      room.on("message", message => {
-        if (monitor) this.updateMonitorLogs(message.data.toString());
-      });
+    room.on("peer left", peer => {
+      if (devMonitor) this.updateMonitorLogs(`left: ${peer}`);
+      this.removePeer(peer);
+      onPeerLeft(peer);
+    });
+
+    room.on("subscribed", () => {
+      if (devMonitor) this.updateMonitorLogs("subscribed!");
+      onSubcribed();
+    });
+
+    room.on("message", message => {
+      if (devMonitor) this.updateMonitorLogs(message.data.toString());
+      onMessage(message);
     });
 
     ipfs.on("stop", () => {
-      if (monitor) this.updateMonitorLogs("disconnected!");
+      if (devMonitor) this.updateMonitorLogs("disconnected!");
       this.setState({ ipfsConnected: false });
+      onDisconnect();
     });
+  };
+
+  sendMessage = (peer, message) => {
+    if (!this.state.ipfsConnected || !this.state.room) {
+      throw new Error("IPFS Node not connected or PubSub Room not available");
+    }
+    this.state.room.sendTo(peer, message);
   };
 
   updateMonitorLogs = item => {
@@ -145,9 +167,9 @@ class IPFSPubSubRoomComponent extends Component {
   renderMonitorLogs = () => {
     const { logs } = this.state;
 
-    let monitorLogs = logs || ["No monitor logs"];
+    let devMonitorLogs = logs || ["No dev monitor logs"];
 
-    return monitorLogs.map((log, idx) => (
+    return devMonitorLogs.map((log, idx) => (
       <div className="ipfs-pubsub-log" style={styles.log} key={`logs-${idx}`}>
         {`> ${log}`}
       </div>
@@ -155,10 +177,21 @@ class IPFSPubSubRoomComponent extends Component {
   };
 
   render() {
+    const children = React.Children.map(this.props.children, child =>
+      React.cloneElement(this.props.children, {
+        ipfs: this.state.ipfs,
+        room: this.state.room,
+        ipfsConnected: this.state.ipfsConnected,
+        ipfsId: this.state.ipfsId,
+        sendMessage: this.sendMessage,
+        registerIpfsRoom: this.registerIpfsRoom
+      })
+    );
+
     return (
       <div>
         <div className="ipfs-pubsub-wrapper" style={styles.wrapper}>
-          {this.props.monitor && (
+          {this.props.devMonitor && (
             <div className="ipfs-pubsub-monitor" style={styles.monitor}>
               <h1 className="ipfs-pubsub-title" style={styles.title}>
                 IPFS PubSub Room
@@ -169,29 +202,29 @@ class IPFSPubSubRoomComponent extends Component {
             </div>
           )}
         </div>
-        <IPFSPubSubRoomContext.Provider
-          value={{
-            ipfsConnected: this.state.ipfsConnected,
-            ipfsId: this.state.ipfsId
-          }}
-        >
-          {this.props.children}
-        </IPFSPubSubRoomContext.Provider>
+        {children}
       </div>
     );
   }
 }
 
-IPFSPubSubRoomComponent.propTypes = {
+IPFSPubSubRoom.propTypes = {
   roomName: PropTypes.string.isRequired,
-  monitor: PropTypes.bool
+  onMessage: PropTypes.func,
+  onSubcribed: PropTypes.func,
+  onDisconnect: PropTypes.func,
+  onPeerJoined: PropTypes.func,
+  onPeerLeft: PropTypes.func,
+  devMonitor: PropTypes.bool
 };
 
-IPFSPubSubRoomComponent.defaultProps = {
-  monitor: false
+IPFSPubSubRoom.defaultProps = {
+  onMessage: () => {},
+  onSubcribed: () => {},
+  onDisconnect: () => {},
+  onPeerJoined: () => {},
+  onPeerLeft: () => {},
+  devMonitor: false
 };
 
-export default {
-  Component: IPFSPubSubRoomComponent,
-  Context: IPFSPubSubRoomContext
-};
+export default IPFSPubSubRoom;
