@@ -8,7 +8,8 @@ import Column from "../components/Column";
 import SocialMediaList from "../components/SocialMediaList";
 import QRCodeScanner from "../components/QRCodeScanner";
 import QRCodeDisplay from "../components/QRCodeDisplay";
-import P2PNetwork from "../components/P2PNetwork";
+import Loader from "../components/Loader";
+import IPFSPubSubRoom from "../components/IPFSPubSubRoom";
 import camera from "../assets/camera.svg";
 import qrcode from "../assets/qrcode.svg";
 import { responsive } from "../styles";
@@ -35,14 +36,6 @@ const StyledQRCodeWrapper = styled(Column)`
   width: 100%;
   height: 100%;
   min-height: 360px;
-`;
-
-const StyledDevelopmentMonitor = styled.div`
-  width: 100%;
-  text-align: left;
-  word-break: break-word;
-  font-size: 12px;
-  padding: 16px;
 `;
 
 const StyledContainer = styled.div`
@@ -87,17 +80,16 @@ const StyledMetaConnectionsListWrapper = styled.div`
   margin: 20px auto;
 `;
 
-const StyledP2PNetworkWrapper = styled.div`
-  width: 100%;
-  margin: 20px auto;
-`;
-
 const StyledMetaConnectionsList = styled.div``;
 
 const StyledMetaConnectionsItem = styled.div`
   margin: 10px auto;
   text-align: left;
   cursor: pointer;
+`;
+
+const StyledMetaConnectionsEmpty = styled(StyledMetaConnectionsItem)`
+  cursor: none;
 `;
 
 const StyledTabsWrapper = styled.div`
@@ -154,22 +146,7 @@ let baseUrl =
 
 class Dashboard extends Component {
   state = {
-    scan: false,
-    uri: ""
-  };
-
-  componentDidMount() {
-    this.updateURI();
-  }
-
-  updateURI = () => {
-    this.setState({ uri: "" });
-    const name = this.props.name;
-    const socialMedia = encodeURIComponent(
-      JSON.stringify(this.props.socialMedia)
-    );
-    let uri = `${baseUrl}?name=${name}&socialMedia=${socialMedia}&t=${Date.now()}`;
-    this.setState({ uri });
+    scan: false
   };
 
   openMetaConnection(metaConnection) {
@@ -212,99 +189,106 @@ class Dashboard extends Component {
   render() {
     const qrcodeScale =
       window.innerWidth < 470 ? (window.innerWidth < 370 ? 3 : 4) : 5;
-
     return (
       <Base>
-        <StyledWrapper maxWidth={400}>
-          <StyledProfile>
-            <StyledName>
-              <span>{`👩‍🚀`}</span>
-              {`@${this.props.name}`}
-            </StyledName>
-            <SocialMediaList socialMedia={this.props.socialMedia} />
-          </StyledProfile>
-          <StyledContainer>
-            <StyledMetaConnections>
-              {Object.keys(this.props.metaConnections).length || 0}
-              <span>{` ❤️`}</span>
-            </StyledMetaConnections>
-            <StyledParagrah>{`Scan to get more ❤️`}</StyledParagrah>
-          </StyledContainer>
-          <Card>
-            <StyledTabsWrapper>
-              <StyledTab
-                active={!this.state.scan}
-                onClick={this.toggleQRCodeScanner}
-              >
-                <StyledIcon
-                  icon={qrcode}
-                  size={20}
-                  color={"dark"}
+        <IPFSPubSubRoom.Component
+          roomName={`metaconnect`}
+          monitor={process.env.NODE_ENV === "development"}
+        >
+          <StyledWrapper maxWidth={400}>
+            <StyledProfile>
+              <StyledName>
+                <span>{`👩‍🚀`}</span>
+                {`@${this.props.name}`}
+              </StyledName>
+              <SocialMediaList socialMedia={this.props.socialMedia} />
+            </StyledProfile>
+            <StyledContainer>
+              <StyledMetaConnections>
+                {Object.keys(this.props.metaConnections).length || 0}
+                <span>{` ❤️`}</span>
+              </StyledMetaConnections>
+              <StyledParagrah>{`Scan to get more ❤️`}</StyledParagrah>
+            </StyledContainer>
+            <Card>
+              <StyledTabsWrapper>
+                <StyledTab
+                  active={!this.state.scan}
                   onClick={this.toggleQRCodeScanner}
-                />
-                <p>QR Code</p>
-              </StyledTab>
-              <StyledTab
-                active={this.state.scan}
-                onClick={this.toggleQRCodeScanner}
-              >
-                <StyledIcon
-                  icon={camera}
-                  size={20}
-                  color={"dark"}
+                >
+                  <StyledIcon
+                    icon={qrcode}
+                    size={20}
+                    color={"dark"}
+                    onClick={this.toggleQRCodeScanner}
+                  />
+                  <p>QR Code</p>
+                </StyledTab>
+                <StyledTab
+                  active={this.state.scan}
                   onClick={this.toggleQRCodeScanner}
-                />
-                <p>Scan</p>
-              </StyledTab>
-            </StyledTabsWrapper>
-            <StyledQRCodeWrapper>
-              {this.state.scan ? (
-                <QRCodeScanner
-                  onValidate={this.onQRCodeValidate}
-                  onError={this.onQRCodeError}
-                  onScan={this.onQRCodeScan}
-                  onClose={this.toggleQRCodeScanner}
-                />
+                >
+                  <StyledIcon
+                    icon={camera}
+                    size={20}
+                    color={"dark"}
+                    onClick={this.toggleQRCodeScanner}
+                  />
+                  <p>Scan</p>
+                </StyledTab>
+              </StyledTabsWrapper>
+              <StyledQRCodeWrapper>
+                {this.state.scan ? (
+                  <QRCodeScanner
+                    onValidate={this.onQRCodeValidate}
+                    onError={this.onQRCodeError}
+                    onScan={this.onQRCodeScan}
+                    onClose={this.toggleQRCodeScanner}
+                  />
+                ) : (
+                  <IPFSPubSubRoom.Context.Consumer>
+                    {({ ipfsConnected, ipfsId }) =>
+                      ipfsConnected && ipfsId ? (
+                        <QRCodeDisplay
+                          scale={qrcodeScale}
+                          data={`{${baseUrl}}/${ipfsId}`}
+                        />
+                      ) : (
+                        <Loader color="dark" background="white" />
+                      )
+                    }
+                  </IPFSPubSubRoom.Context.Consumer>
+                )}
+              </StyledQRCodeWrapper>
+            </Card>
+            <StyledMetaConnectionsListWrapper>
+              <h2>Your MetaConnections</h2>
+              {Object.keys(this.props.metaConnections).length ? (
+                <StyledMetaConnectionsList>
+                  {Object.keys(this.props.metaConnections).map(key => (
+                    <StyledMetaConnectionsItem
+                      onClick={() => {
+                        const metaConnection = {
+                          request: false,
+                          name: this.props.metaConnections[key].name,
+                          socialMedia: this.props.metaConnections[key]
+                            .socialMedia
+                        };
+                        this.openMetaConnection(metaConnection);
+                      }}
+                    >
+                      {formatHandle(key)}
+                    </StyledMetaConnectionsItem>
+                  ))}
+                </StyledMetaConnectionsList>
               ) : (
-                <QRCodeDisplay scale={qrcodeScale} data={this.state.uri} />
+                <StyledMetaConnectionsEmpty>
+                  {"Go make some MetaConnections"}
+                </StyledMetaConnectionsEmpty>
               )}
-              {process.env.NODE_ENV === "development" && (
-                <StyledDevelopmentMonitor>
-                  <a href={this.state.uri}>{this.state.uri}</a>
-                </StyledDevelopmentMonitor>
-              )}
-            </StyledQRCodeWrapper>
-          </Card>
-          <StyledMetaConnectionsListWrapper>
-            <h2>Your MetaConnections</h2>
-            {Object.keys(this.props.metaConnections).length ? (
-              <StyledMetaConnectionsList>
-                {Object.keys(this.props.metaConnections).map(key => (
-                  <StyledMetaConnectionsItem
-                    onClick={() => {
-                      const metaConnection = {
-                        request: false,
-                        name: this.props.metaConnections[key].name,
-                        socialMedia: this.props.metaConnections[key].socialMedia
-                      };
-                      this.openMetaConnection(metaConnection);
-                    }}
-                  >
-                    {formatHandle(key)}
-                  </StyledMetaConnectionsItem>
-                ))}
-              </StyledMetaConnectionsList>
-            ) : (
-              <StyledMetaConnectionsItem>
-                {"Go make some MetaConnections"}
-              </StyledMetaConnectionsItem>
-            )}
-          </StyledMetaConnectionsListWrapper>
-          <StyledP2PNetworkWrapper>
-            <h2>P2P Network</h2>
-            <P2PNetwork name={this.props.name} />
-          </StyledP2PNetworkWrapper>
-        </StyledWrapper>
+            </StyledMetaConnectionsListWrapper>
+          </StyledWrapper>
+        </IPFSPubSubRoom.Component>
       </Base>
     );
   }
