@@ -10,7 +10,6 @@ const StyledMonitorWrapper = styled.div`
   bottom: 0;
   right: 0;
   left: 0;
-  z-index: 100000000;
 `;
 
 const StyledMonitorContainer = styled.div`
