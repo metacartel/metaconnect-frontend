@@ -158,3 +158,43 @@ export function parseQueryParams(queryString) {
   }
   return parameters;
 }
+
+/**
+ * @desc generate new meta connection
+ * @param  {Object}  {name}
+ * @return {Object}
+ */
+export function generateNewMetaConnection({ name, socialMedia }) {
+  if (!name || typeof name !== "string") {
+    throw new Error("ERROR: MetaConnection name is missing or invalid");
+  }
+  if (!socialMedia || typeof socialMedia !== "object") {
+    throw new Error("ERROR: MetaConnection socialMedia is missing or invalid");
+  }
+  return {
+    request: true,
+    name: name,
+    socialMedia: socialMedia ? JSON.parse(socialMedia) : {}
+  };
+}
+
+/**
+ * @desc handle meta connection uri
+ * @param  {String}  {string}
+ * @return {String|Null}
+ */
+export function handleMetaConnectionURI(string) {
+  let result = null;
+  const pathEnd = string.indexOf("?") !== -1 ? string.indexOf("?") : undefined;
+  const queryString =
+    typeof pathEnd === "undefined" ? string.substring(pathEnd) : "";
+  let queryParams = parseQueryParams(queryString);
+  if (Object.keys(queryParams).length) {
+    const peer = queryParams.id;
+    const name = queryParams.name;
+    const socialMedia = queryParams.socialMedia;
+    const metaConnection = generateNewMetaConnection({ name, socialMedia });
+    result = { peer, metaConnection };
+  }
+  return result;
+}

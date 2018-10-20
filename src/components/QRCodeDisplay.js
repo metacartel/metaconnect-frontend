@@ -4,7 +4,7 @@ import styled from "styled-components";
 import qrImage from "qr-image";
 
 const StyledWrapper = styled.div`
-  width: 100%;
+  wwwidth: 100%;
   padding: 20px;
   display: flex;
   align-items: center;

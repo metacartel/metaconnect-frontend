@@ -8,7 +8,7 @@ import EditSocialMedia from "./pages/EditSocialMedia";
 import MetaConnection from "./pages/MetaConnection";
 import NotFound from "./pages/NotFound";
 import { metaConnectionShow } from "./reducers/_metaConnection";
-import { parseQueryParams } from "./helpers/utilities";
+import { handleMetaConnectionURI } from "./helpers/utilities";
 
 class Router extends Component {
   componentDidMount() {
@@ -23,16 +23,10 @@ class Router extends Component {
           exact
           path="/"
           render={routerProps => {
-            let queryParams = parseQueryParams(routerProps.location.search);
-            if (Object.keys(queryParams).length) {
-              this.props.metaConnectionShow({
-                request: true,
-                name: queryParams.name,
-                socialMedia: queryParams.socialMedia
-                  ? JSON.parse(queryParams.socialMedia)
-                  : {}
-              });
-              if (name) {
+            if (routerProps.location.search) {
+              let result = handleMetaConnectionURI(routerProps.location.search);
+              if (result) {
+                this.props.metaConnectionShow(result.metaConnection);
                 return <Redirect to="/meta-connection" />;
               }
             }

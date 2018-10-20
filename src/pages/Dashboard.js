@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import Base from "../layouts/base";
 import Card from "../components/Card";
@@ -18,7 +19,11 @@ import {
   p2pRoomSendMessage,
   p2pRoomRegisterListener
 } from "../reducers/_p2pRoom";
-import { formatHandle, parseQueryParams } from "../helpers/utilities";
+import {
+  formatHandle,
+  handleMetaConnectionURI,
+  generateNewMetaConnection
+} from "../helpers/utilities";
 import { colors, transitions } from "../styles";
 
 const StyledWrapper = styled(Column)`
@@ -152,16 +157,6 @@ class Dashboard extends Component {
     scan: false
   };
 
-  onMessage = message => {
-    console.log("[Dashboard] onMessage message", message.data.toString());
-  };
-
-  onPeerJoined = peer => {
-    console.log("[Dashboard] onPeerJoined peer", peer);
-    // DELETE THIS AFTER
-    this.sendMessage(peer, `Hey friend, my name is ${this.props.userId}`);
-  };
-
   componentDidUpdate(prevProps) {
     if (prevProps.connected !== this.props.connected && this.props.connected) {
       console.log(
@@ -169,13 +164,36 @@ class Dashboard extends Component {
         this.props.connected
       );
       this.props.p2pRoomRegisterListener("message", this.onMessage);
-      this.props.p2pRoomRegisterListener("peer joined", this.onPeerJoined);
     }
   }
+
+  onMessage = message => {
+    let string = message.data.toString();
+    if (string.trim()) {
+      let json = null;
+      try {
+        json = JSON.parse(string);
+      } catch (err) {
+        throw new Error(err);
+      }
+      if (json) {
+        const metaConnection = generateNewMetaConnection(json);
+        this.openMetaConnection(metaConnection);
+      }
+    }
+  };
 
   openMetaConnection(metaConnection) {
     this.props.metaConnectionShow(metaConnection);
     window.browserHistory.push("/meta-connection");
+  }
+
+  sendMetaConnection(peer) {
+    const metaConnection = generateNewMetaConnection({
+      name: this.props.name,
+      socialMedia: this.props.socialMedia
+    });
+    this.sendMessage(peer, JSON.stringify(metaConnection));
   }
 
   toggleQRCodeScanner = () => this.setState({ scan: !this.state.scan });
@@ -197,27 +215,18 @@ class Dashboard extends Component {
   };
 
   onQRCodeScan = string => {
-    const pathEnd =
-      string.indexOf("?") !== -1 ? string.indexOf("?") : undefined;
-    const queryString = pathEnd ? string.substring(pathEnd) : "";
-    let queryParams = parseQueryParams(queryString);
-    if (Object.keys(queryParams).length) {
-      const metaConnection = {
-        request: true,
-        name: queryParams.name,
-        socialMedia: queryParams.socialMedia
-          ? JSON.parse(queryParams.socialMedia)
-          : {}
-      };
-      this.openMetaConnection(metaConnection);
+    const result = handleMetaConnectionURI(string);
+    if (result) {
+      this.sendMetaConnection(result.peer);
+      this.openMetaConnection(result.metaConnection);
     }
     this.toggleQRCodeScanner();
   };
 
   render() {
-    const qrcodeScale =
-      window.innerWidth < 470 ? (window.innerWidth < 370 ? 3 : 4) : 5;
-
+    const uri = `{${baseUrl}}?id=${this.props.userId}&name=${
+      this.props.name
+    }&socialMedia=${this.props.socialMedia}`;
     return (
       <Base>
         <StyledWrapper maxWidth={400}>
@@ -271,10 +280,7 @@ class Dashboard extends Component {
                   onClose={this.toggleQRCodeScanner}
                 />
               ) : this.props.connected && this.props.userId ? (
-                <QRCodeDisplay
-                  scale={qrcodeScale}
-                  data={`{${baseUrl}}?id=${this.props.userId}`}
-                />
+                <QRCodeDisplay data={uri} />
               ) : (
                 <Loader color="dark" background="white" />
               )}
@@ -311,7 +317,19 @@ class Dashboard extends Component {
   }
 }
 
-const reduxProps = ({ account, p2pRoom }) => ({
+Dashboard.propTypes = {
+  metaConnectionShow: PropTypes.func.isRequired,
+  notificationShow: PropTypes.func.isRequired,
+  p2pRoomSendMessage: PropTypes.func.isRequired,
+  p2pRoomRegisterListener: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  socialMedia: PropTypes.object.isRequired,
+  metaConnections: PropTypes.object.isRequired,
+  connected: PropTypes.bool.isRequired,
+  userId: PropTypes.string.isRequired
+};
+
+const reduxProps = ({ account, p2pRoom, metaConnection }) => ({
   name: account.name,
   socialMedia: account.socialMedia,
   metaConnections: account.metaConnections,

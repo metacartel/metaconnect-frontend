@@ -1,7 +1,5 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import Wrapper from "../components/Wrapper";
 import Column from "../components/Column";
 import Notification from "../components/Notification";
@@ -26,33 +24,13 @@ const StyledContent = styled(Wrapper)`
   }
 `;
 
-class Base extends Component {
-  render() {
-    console.log("Base Layout rendered!!!");
+const Base = ({ children, ...props }) => (
+  <StyledLayout {...props}>
+    <Column maxWidth={1000} spanHeight>
+      <StyledContent>{children}</StyledContent>
+    </Column>
+    <Notification />
+  </StyledLayout>
+);
 
-    return (
-      <StyledLayout>
-        <Column maxWidth={1000} spanHeight>
-          <StyledContent>{this.props.children}</StyledContent>
-        </Column>
-        <Notification />
-      </StyledLayout>
-    );
-  }
-}
-
-Base.propTypes = {
-  children: PropTypes.node.isRequired,
-  address: PropTypes.string.isRequired,
-  network: PropTypes.string.isRequired
-};
-
-const reduxProps = ({ account }) => ({
-  address: account.address,
-  network: account.network
-});
-
-export default connect(
-  reduxProps,
-  null
-)(Base);
+export default Base;
