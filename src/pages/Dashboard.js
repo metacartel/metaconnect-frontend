@@ -159,10 +159,6 @@ class Dashboard extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.connected !== this.props.connected && this.props.connected) {
-      console.log(
-        "[Dashboard] componentDidUpdate connected is",
-        this.props.connected
-      );
       this.props.p2pRoomRegisterListener("message", this.onMessage);
     }
   }
