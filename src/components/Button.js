@@ -96,7 +96,7 @@ const StyledButton = styled.button`
 
 const Button = ({
   children,
-  fetching,
+  loading,
   outline,
   type,
   color,
@@ -117,17 +117,13 @@ const Button = ({
   >
     <StyledHoverLayer />
     <StyledIcon />
-    {fetching ? (
-      <Loader size={20} color="white" background={color} />
-    ) : (
-      children
-    )}
+    {loading ? <Loader size={20} color="white" background={color} /> : children}
   </StyledButton>
 );
 
 Button.propTypes = {
   children: PropTypes.node.isRequired,
-  fetching: PropTypes.bool,
+  loading: PropTypes.bool,
   outline: PropTypes.bool,
   type: PropTypes.string,
   color: PropTypes.string,
@@ -138,7 +134,7 @@ Button.propTypes = {
 };
 
 Button.defaultProps = {
-  fetching: false,
+  loading: false,
   outline: false,
   type: "button",
   color: "darkGrey",

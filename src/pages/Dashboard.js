@@ -9,12 +9,15 @@ import SocialMediaList from "../components/SocialMediaList";
 import QRCodeScanner from "../components/QRCodeScanner";
 import QRCodeDisplay from "../components/QRCodeDisplay";
 import Loader from "../components/Loader";
-import IPFSPubSubRoom from "../components/IPFSPubSubRoom";
 import camera from "../assets/camera.svg";
 import qrcode from "../assets/qrcode.svg";
 import { responsive } from "../styles";
 import { notificationShow } from "../reducers/_notification";
 import { metaConnectionShow } from "../reducers/_metaConnection";
+import {
+  p2pRoomSendMessage,
+  p2pRoomRegisterListener
+} from "../reducers/_p2pRoom";
 import { formatHandle, parseQueryParams } from "../helpers/utilities";
 import { colors, transitions } from "../styles";
 
@@ -149,16 +152,24 @@ class Dashboard extends Component {
     scan: false
   };
 
+  onMessage = message => {
+    console.log("[Dashboard] onMessage message", message.data.toString());
+  };
+
+  onPeerJoined = peer => {
+    console.log("[Dashboard] onPeerJoined peer", peer);
+    // DELETE THIS AFTER
+    this.sendMessage(peer, `Hey friend, my name is ${this.props.userId}`);
+  };
+
   componentDidUpdate(prevProps) {
-    if (prevProps.ipfsConnected !== this.props.ipfsConnected) {
+    if (prevProps.connected !== this.props.connected && this.props.connected) {
       console.log(
-        "[Dashboard] componentDidUpdate ipfsConnected is",
-        this.props.ipfsConnected
+        "[Dashboard] componentDidUpdate connected is",
+        this.props.connected
       );
-      this.props.registerIpfsRoom({
-        onMessage: this.onMessage,
-        onPeerJoined: this.onPeerJoined
-      });
+      this.props.p2pRoomRegisterListener("message", this.onMessage);
+      this.props.p2pRoomRegisterListener("peer joined", this.onPeerJoined);
     }
   }
 
@@ -169,17 +180,8 @@ class Dashboard extends Component {
 
   toggleQRCodeScanner = () => this.setState({ scan: !this.state.scan });
 
-  sendMessage = () => {
-    console.log("[Dashboard] sendMessage", this.props.sendMessage);
-  };
-
-  onMessage = message => {
-    console.log("[Dashboard] onMessage message", message.data.toString());
-  };
-
-  onPeerJoined = peer => {
-    console.log("[Dashboard] onPeerJoined peer", peer);
-    this.props.sendMessage(peer, `Hey friend, my name is ${this.props.ipfsId}`);
+  sendMessage = (peer, message) => {
+    this.props.p2pRoomSendMessage(peer, message);
   };
 
   onQRCodeError = () => {
@@ -268,10 +270,10 @@ class Dashboard extends Component {
                   onScan={this.onQRCodeScan}
                   onClose={this.toggleQRCodeScanner}
                 />
-              ) : this.props.ipfsConnected && this.props.ipfsId ? (
+              ) : this.props.connected && this.props.userId ? (
                 <QRCodeDisplay
                   scale={qrcodeScale}
-                  data={`{${baseUrl}}?id=${this.props.ipfsId}`}
+                  data={`{${baseUrl}}?id=${this.props.userId}`}
                 />
               ) : (
                 <Loader color="dark" background="white" />
@@ -309,22 +311,20 @@ class Dashboard extends Component {
   }
 }
 
-const reduxProps = ({ account }) => ({
+const reduxProps = ({ account, p2pRoom }) => ({
   name: account.name,
   socialMedia: account.socialMedia,
-  metaConnections: account.metaConnections
+  metaConnections: account.metaConnections,
+  connected: p2pRoom.connected,
+  userId: p2pRoom.userId
 });
-
-const WrappedDashboard = props => (
-  <IPFSPubSubRoom
-    roomName={`metaconnect`}
-    devMonitor={process.env.NODE_ENV === "development"}
-  >
-    <Dashboard {...props} />
-  </IPFSPubSubRoom>
-);
 
 export default connect(
   reduxProps,
-  { metaConnectionShow, notificationShow }
-)(WrappedDashboard);
+  {
+    metaConnectionShow,
+    notificationShow,
+    p2pRoomSendMessage,
+    p2pRoomRegisterListener
+  }
+)(Dashboard);

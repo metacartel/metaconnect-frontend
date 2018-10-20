@@ -28,6 +28,8 @@ const StyledContent = styled(Wrapper)`
 
 class Base extends Component {
   render() {
+    console.log("Base Layout rendered!!!");
+
     return (
       <StyledLayout>
         <Column maxWidth={1000} spanHeight>
