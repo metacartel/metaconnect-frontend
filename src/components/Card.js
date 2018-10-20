@@ -6,7 +6,7 @@ import { colors } from "../styles";
 
 const StyledCard = styled(Column)`
   width: 100%;
-  max-width: ${({ maxWidth }) => `${maxWidth}px`}
+  max-width: ${({ maxWidth }) => `${maxWidth}px`};
   background-color: rgb(${colors.white});
   color: rgb(${colors.dark});
   border-radius: 20px;

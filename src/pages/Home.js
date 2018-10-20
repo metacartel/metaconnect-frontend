@@ -9,7 +9,7 @@ import Form from "../components/Form";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { accountUpdateName } from "../reducers/_account";
-import { formatHandle, handleMetaConnectionURI } from "../helpers/utilites";
+import { formatHandle, handleMetaConnectionURI } from "../helpers/utilities";
 import { fonts, colors } from "../styles";
 
 const StyledWrapper = styled(Column)`
