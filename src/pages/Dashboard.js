@@ -329,7 +329,7 @@ Dashboard.propTypes = {
   userId: PropTypes.string.isRequired
 };
 
-const reduxProps = ({ account, p2pRoom, metaConnection }) => ({
+const reduxProps = ({ account, p2pRoom }) => ({
   name: account.name,
   socialMedia: account.socialMedia,
   metaConnections: account.metaConnections,
