@@ -9,6 +9,7 @@ import Form from "../components/Form";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { accountUpdateName } from "../reducers/_account";
+import { formatHandle, handleMetaConnectionURI } from "../helpers/utilites";
 import { fonts, colors } from "../styles";
 
 const StyledWrapper = styled(Column)`
@@ -25,7 +26,7 @@ const StyledTitle = styled.h2`
   margin: 20px 0;
 `;
 
-const StyledDescription = styled.p`
+const StyledSubtitle = styled.p`
   font-size: ${fonts.size.h4};
   margin: 40px 0;
 `;
@@ -61,33 +62,40 @@ class Home extends Component {
       window.browserHistory.push("/dashboard");
     }
   };
-  render = () => (
-    <Base>
-      <StyledWrapper maxWidth={400}>
-        <StyledTitle>MetaConnect</StyledTitle>
-        <StyledRedLine />
-        <StyledDescription>
-          A meta connection to start your journey using Ethereum
-        </StyledDescription>
-        <Card>
-          <Form onSubmit={this.onSubmit}>
-            <Input
-              label="👩‍🚀 Username:"
-              placeholder="@carlosmatos"
-              type="text"
-              color={"lightGrey"}
-              shadow={false}
-              value={this.state.name}
-              onChange={this.updateName}
-            />
-            <StyledButton color="red" textTransform="uppercase" type="submit">
-              {"Start 🚀"}
-            </StyledButton>
-          </Form>
-        </Card>
-      </StyledWrapper>
-    </Base>
-  );
+  render() {
+    let title = "MetaConnect";
+    let subtitle = "A meta connection to start your journey using Ethereum";
+    const result = handleMetaConnectionURI(this.props.location.search);
+    if (result) {
+      title = `You were invited by ${formatHandle(result.metaConnection.name)}`;
+      subtitle = "Choose a username below to start your metaconnection";
+    }
+    return (
+      <Base>
+        <StyledWrapper maxWidth={400}>
+          <StyledTitle>{title}</StyledTitle>
+          <StyledRedLine />
+          <StyledSubtitle>{subtitle}</StyledSubtitle>
+          <Card>
+            <Form onSubmit={this.onSubmit}>
+              <Input
+                label="👩‍🚀 Username:"
+                placeholder="@carlosmatos"
+                type="text"
+                color={"lightGrey"}
+                shadow={false}
+                value={this.state.name}
+                onChange={this.updateName}
+              />
+              <StyledButton color="red" textTransform="uppercase" type="submit">
+                {"Start 🚀"}
+              </StyledButton>
+            </Form>
+          </Card>
+        </StyledWrapper>
+      </Base>
+    );
+  }
 }
 
 Home.propTypes = {
