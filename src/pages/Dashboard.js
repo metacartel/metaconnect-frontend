@@ -158,7 +158,7 @@ class Dashboard extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (prevProps.connected !== this.props.connected && this.props.connected) {
+    if (this.props.loading && this.props.connected) {
       const listeners = [
         {
           event: "message",
@@ -168,6 +168,10 @@ class Dashboard extends Component {
       this.props.p2pRoomRegisterListeners(listeners);
     }
   }
+
+  sendMessage = (peer, message) => {
+    this.props.p2pRoomSendMessage(peer, message);
+  };
 
   onMessage = message => {
     let string = message.data.toString();
@@ -198,11 +202,16 @@ class Dashboard extends Component {
     this.sendMessage(peer, JSON.stringify(metaConnection));
   }
 
-  toggleQRCodeScanner = () => this.setState({ scan: !this.state.scan });
-
-  sendMessage = (peer, message) => {
-    this.props.p2pRoomSendMessage(peer, message);
+  generateQRCodeURI = () => {
+    const { userId, name, socialMedia } = this.props;
+    let uri = "";
+    if (userId) {
+      uri = `{${baseUrl}}?id=${userId}&name=${name}&socialMedia=${socialMedia}`;
+    }
+    return uri;
   };
+
+  toggleQRCodeScanner = () => this.setState({ scan: !this.state.scan });
 
   onQRCodeError = () => {
     this.props.notificationShow("Something went wrong!", true);
@@ -226,9 +235,6 @@ class Dashboard extends Component {
   };
 
   render() {
-    const uri = `{${baseUrl}}?id=${this.props.userId}&name=${
-      this.props.name
-    }&socialMedia=${this.props.socialMedia}`;
     return (
       <Base>
         <StyledWrapper maxWidth={400}>
@@ -281,8 +287,8 @@ class Dashboard extends Component {
                   onScan={this.onQRCodeScan}
                   onClose={this.toggleQRCodeScanner}
                 />
-              ) : this.props.connected && this.props.userId ? (
-                <QRCodeDisplay data={uri} />
+              ) : !this.props.loading ? (
+                <QRCodeDisplay data={() => this.generateQRCodeURI()} />
               ) : (
                 <Loader color="dark" background="white" />
               )}
@@ -327,6 +333,7 @@ Dashboard.propTypes = {
   name: PropTypes.string.isRequired,
   socialMedia: PropTypes.object.isRequired,
   metaConnections: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
   connected: PropTypes.bool.isRequired,
   userId: PropTypes.string.isRequired
 };
@@ -335,6 +342,7 @@ const reduxProps = ({ account, p2pRoom }) => ({
   name: account.name,
   socialMedia: account.socialMedia,
   metaConnections: account.metaConnections,
+  loading: p2pRoom.loading,
   connected: p2pRoom.connected,
   userId: p2pRoom.userId
 });
