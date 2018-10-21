@@ -17,7 +17,7 @@ import { notificationShow } from "../reducers/_notification";
 import { metaConnectionShow } from "../reducers/_metaConnection";
 import {
   p2pRoomSendMessage,
-  p2pRoomRegisterListener
+  p2pRoomRegisterListeners
 } from "../reducers/_p2pRoom";
 import {
   formatHandle,
@@ -159,7 +159,13 @@ class Dashboard extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.connected !== this.props.connected && this.props.connected) {
-      this.props.p2pRoomRegisterListener("message", this.onMessage);
+      const listeners = [
+        {
+          event: "message",
+          callback: this.onMessage
+        }
+      ];
+      this.props.p2pRoomRegisterListeners(listeners);
     }
   }
 
@@ -317,7 +323,7 @@ Dashboard.propTypes = {
   metaConnectionShow: PropTypes.func.isRequired,
   notificationShow: PropTypes.func.isRequired,
   p2pRoomSendMessage: PropTypes.func.isRequired,
-  p2pRoomRegisterListener: PropTypes.func.isRequired,
+  p2pRoomRegisterListeners: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   socialMedia: PropTypes.object.isRequired,
   metaConnections: PropTypes.object.isRequired,
@@ -339,6 +345,6 @@ export default connect(
     metaConnectionShow,
     notificationShow,
     p2pRoomSendMessage,
-    p2pRoomRegisterListener
+    p2pRoomRegisterListeners
   }
 )(Dashboard);

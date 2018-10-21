@@ -106,6 +106,7 @@ class EditSocialMedia extends Component {
               color={"lightGrey"}
               shadow={false}
               value={this.state.twitter}
+              autoCapitalize="off"
               onChange={({ target }) =>
                 this.updateHandle(target.value, true, "twitter")
               }
@@ -117,6 +118,7 @@ class EditSocialMedia extends Component {
               color={"lightGrey"}
               shadow={false}
               value={this.state.telegram}
+              autoCapitalize="off"
               onChange={({ target }) =>
                 this.updateHandle(target.value, true, "telegram")
               }
@@ -128,6 +130,7 @@ class EditSocialMedia extends Component {
               color={"lightGrey"}
               shadow={false}
               value={this.state.github}
+              autoCapitalize="off"
               onChange={({ target }) =>
                 this.updateHandle(target.value, true, "github")
               }
@@ -140,6 +143,7 @@ class EditSocialMedia extends Component {
               color={"lightGrey"}
               shadow={false}
               value={this.state.linkedin}
+              autoCapitalize="off"
               onChange={({ target }) =>
                 this.updateHandle(target.value, true, "linkedin")
               }
@@ -152,6 +156,7 @@ class EditSocialMedia extends Component {
               color={"lightGrey"}
               shadow={false}
               value={this.state.phone}
+              autoCapitalize="off"
               onChange={({ target }) =>
                 this.updateHandle(target.value, false, "phone")
               }
@@ -164,6 +169,7 @@ class EditSocialMedia extends Component {
               color={"lightGrey"}
               shadow={false}
               value={this.state.email}
+              autoCapitalize="off"
               onChange={({ target }) =>
                 this.updateHandle(target.value, false, "email")
               }
