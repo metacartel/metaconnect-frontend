@@ -10,9 +10,9 @@ let currentAccount;
 let metamask = false;
 
 let web3Provider;
-// web3Provider = "metamask"
+web3Provider = "metamask"
 // web3Provider = "ethers"
-web3Provider = "browser";
+// web3Provider = "browser";
 
 if (web3Provider === "browser") {
 
@@ -42,7 +42,6 @@ if (web3Provider === "browser") {
   });
 
 }
-
 
 export const createAccount = async address => {
   return await ThreeBox.openBox(currentAccount, web3.currentProvider);

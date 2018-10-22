@@ -87,6 +87,13 @@ const StyledAvatar = styled.div`
   background-color: black;
 `;
 
+const StyledAvatar2 = styled.div`
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: white;
+`;
+
 const StyledSocialMediaWrapper = styled.div`
   margin: 8px 0;
 `;
@@ -141,8 +148,14 @@ class Dashboard extends Component {
     console.log("WEB3: ", web3Instance);
     console.log("META-MASK-WEB3: ", window.web3);
   }
-  getProfile = async () => {
+  createProfile = async () => {
     const account = await createAccount();
+    console.log("ACCOUNT: ", account);
+    this.setState({account});
+    console.log(this.state.account);
+  };
+  getProfile = async () => {
+    const account = await getAccount();
     console.log("ACCOUNT: ", account);
     this.setState({account});
     console.log(this.state.account);
@@ -201,11 +214,10 @@ class Dashboard extends Component {
         <StyledWrapper maxWidth={400}>
           <StyledProfile>
             <StyledName>
-              <StyledAvatar onClick={this.getProfile}/>
+              <StyledAvatar onClick={this.createProfile}/>
               <span>{`👩‍🚀`}</span>
               {`@${name}`}
             </StyledName>
-            <div>{this.state.account.toString()}</div>
             <StyledSocialMediaWrapper>
               {!Object.keys(socialMedia).length ? (
                 <Link to="/edit-social-media">{"Add Social Media"}</Link>

@@ -2,6 +2,7 @@ import {initSdk} from 'tenzorum';
 import {saveLocal} from './localstorage'
 const Web3 = require('web3');
 const Wallet = require('ethereumjs-wallet');
+const ethutil = require('ethereumjs-util');
 const web3 = new Web3();
 const Tx = require('ethereumjs-tx');
 
@@ -18,52 +19,14 @@ export const createWallet = async () => {
   await saveLocal("account", { privateKey: newWallet.getPrivateKeyString().substring(2), publicAddress: address });
 };
 
-export const _sendETH = async (_addr, _amount, _data) => {
-  // const publicAddress = getPubKey();
-  // if(addr && amount) {
-  //   const nonce = await web3.eth.getTransactionCount(publicAddress);
-  //   const data = _data || '';
-  //   const chainId = await web3.eth.net.getId();
-  //   const rawTx = {
-  //     nonce: nonce,
-  //     from: publicAddress,
-  //     to: _addr,
-  //     value: 100000000000000,
-  //     gasPrice: 20000000000,
-  //     gasLimit: 3000000,
-  //     data,
-  //     chainId,
-  //   };
-  //
-  //   const tx = new Tx(rawTx);
-  //   tx.sign(JSON.parse(localStorage.account).privateKey);
-  //
-  //   const serializedTx = tx.serialize();
-  //
-  //   web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-  //     .on('transactionHash', (txHash) => {
-  //       console.log('TransactionHash:' , txHash);
-  //     })
-  //     .on('receipt', (rec) => {
-  //       console.log('Receipt:' , rec);
-  //     })
-  // }
-};
-
-export const signMsg = async msg => {
-  const tx = new Tx(msg);
-  console.log(JSON.parse(localStorage.account).privateKey, 'hex');
-  tx.sign(new Buffer(JSON.parse(localStorage.account).privateKey, 'hex'));
-
-  const serializedTx = tx.serialize();
-  // return serializedTx;
-  // return tx;
-
-  web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-    .on('transactionHash', (txHash) => {
-      console.log('TransactionHash:' , txHash);
-    })
-    .on('receipt', (rec) => {
-      console.log('Receipt:' , rec);
-    })
+export const signMsg = async (msg, cb) => {
+  msg = ethutil.sha256(msg.params[0]);
+  let result = {};
+  try {
+    const sig = ethutil.ecsign(msg, new Buffer(JSON.parse(localStorage.account).privateKey, 'hex'));
+    result.result = sig.s;
+  } catch(e) {
+    result.error = e;
+  }
+    return cb(result.error, result);
 };
