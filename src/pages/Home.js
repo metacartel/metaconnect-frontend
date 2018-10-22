@@ -86,6 +86,7 @@ class Home extends Component {
                 shadow={false}
                 value={this.state.name}
                 onChange={this.updateName}
+                autoCapitalize="off"
               />
               <StyledButton color="red" textTransform="uppercase" type="submit">
                 {"Start 🚀"}

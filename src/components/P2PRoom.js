@@ -7,9 +7,8 @@ import { colors } from "../styles";
 const StyledMonitorWrapper = styled.div`
   position: fixed;
   top: 0;
-  bottom: 0;
   right: 0;
-  left: 0;
+  z-index: 1000000;
 `;
 
 const StyledMonitorContainer = styled.div`
@@ -56,7 +55,11 @@ class P2PRoom extends Component {
         {this.props.devMonitor && (
           <StyledMonitorContainer>
             <StyledMonitorTitle>IPFS PubSub Room</StyledMonitorTitle>
-            {!this.props.connected ? "Connecting..." : this.renderMonitorLogs()}
+            {this.props.loading
+              ? "Connecting..."
+              : this.props.connected
+                ? this.renderMonitorLogs()
+                : "Disconnected!"}
           </StyledMonitorContainer>
         )}
       </StyledMonitorWrapper>
@@ -68,6 +71,7 @@ class P2PRoom extends Component {
 const reduxProps = ({ p2pRoom }) => ({
   devMonitor: p2pRoom.devMonitor,
   connected: p2pRoom.connected,
+  loading: p2pRoom.loading,
   logs: p2pRoom.logs
 });
 
