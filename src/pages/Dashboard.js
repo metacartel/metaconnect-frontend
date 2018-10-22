@@ -16,6 +16,8 @@ import email from "../assets/email.svg";
 import { responsive } from "../styles";
 import { metaConnectionShow } from "../reducers/_metaConnection";
 import { formatHandle, parseQueryParams } from "../helpers/utilities";
+import {createAccount, getAccount} from "../helpers/3box";
+import {web3Instance} from "../helpers/web3";
 
 const StyledWrapper = styled(Column)`
   padding: 20px;
@@ -78,6 +80,13 @@ const StyledName = styled.h3`
   }
 `;
 
+const StyledAvatar = styled.div`
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: black;
+`;
+
 const StyledSocialMediaWrapper = styled.div`
   margin: 8px 0;
 `;
@@ -123,12 +132,21 @@ let baseUrl =
 class Dashboard extends Component {
   state = {
     scan: false,
-    uri: ""
+    uri: "",
+    account: {}
   };
   componentDidMount() {
     this.updateURI();
     this.startInterval();
+    console.log("WEB3: ", web3Instance);
+    console.log("META-MASK-WEB3: ", window.web3);
   }
+  getProfile = async () => {
+    const account = await createAccount();
+    console.log("ACCOUNT: ", account);
+    this.setState({account});
+    console.log(this.state.account);
+  };
   startInterval = () => {
     const self = this;
     intervalId = setInterval(self.updateURI, 5000);
@@ -183,9 +201,11 @@ class Dashboard extends Component {
         <StyledWrapper maxWidth={400}>
           <StyledProfile>
             <StyledName>
+              <StyledAvatar onClick={this.getProfile}/>
               <span>{`👩‍🚀`}</span>
               {`@${name}`}
             </StyledName>
+            <div>{this.state.account.toString()}</div>
             <StyledSocialMediaWrapper>
               {!Object.keys(socialMedia).length ? (
                 <Link to="/edit-social-media">{"Add Social Media"}</Link>
