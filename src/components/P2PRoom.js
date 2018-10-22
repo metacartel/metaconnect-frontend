@@ -7,9 +7,8 @@ import { colors } from "../styles";
 const StyledMonitorWrapper = styled.div`
   position: fixed;
   top: 0;
-  bottom: 0;
   right: 0;
-  left: 0;
+  z-index: 1000000;
 `;
 
 const StyledMonitorContainer = styled.div`
