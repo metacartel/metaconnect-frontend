@@ -7,8 +7,6 @@ import Dashboard from "./pages/Dashboard";
 import EditSocialMedia from "./pages/EditSocialMedia";
 import MetaConnection from "./pages/MetaConnection";
 import NotFound from "./pages/NotFound";
-import { metaConnectionShow } from "./reducers/_metaConnection";
-import { parseQueryParams } from "./helpers/utilities";
 import {createWallet} from "./helpers/wallet";
 
 class Router extends Component {
@@ -20,26 +18,13 @@ class Router extends Component {
   }
 
   render = () => {
-    const name = this.props.name;
+    const { name } = this.props;
     return (
       <Switch>
         <Route
           exact
           path="/"
           render={routerProps => {
-            let queryParams = parseQueryParams(routerProps.location.search);
-            if (Object.keys(queryParams).length) {
-              this.props.metaConnectionShow({
-                request: true,
-                name: queryParams.name,
-                socialMedia: queryParams.socialMedia
-                  ? JSON.parse(queryParams.socialMedia)
-                  : {}
-              });
-              if (name) {
-                return <Redirect to="/meta-connection" />;
-              }
-            }
             if (name) {
               return <Redirect to="/dashboard" />;
             }
@@ -99,6 +84,6 @@ const reduxProps = ({ account, metaConnection }) => ({
 export default withRouter(
   connect(
     reduxProps,
-    { metaConnectionShow }
+    null
   )(Router)
 );

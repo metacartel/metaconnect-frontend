@@ -3,11 +3,10 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import QrReader from "react-qr-reader";
 import Column from "./Column";
-import CloseButton from "./CloseButton";
 import { colors } from "../styles";
 
 const StyledWrapper = styled.div`
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -15,13 +14,6 @@ const StyledWrapper = styled.div`
   z-index: 5;
   margin: 0 auto !important;
   background: rgb(${colors.black});
-`;
-
-const StyledCloseButton = styled(CloseButton)`
-  position: absolute;
-  z-index: 10;
-  top: 15px;
-  right: 15px;
 `;
 
 class QRCodeScanner extends Component {
@@ -54,7 +46,6 @@ class QRCodeScanner extends Component {
   render() {
     return (
       <StyledWrapper>
-        <StyledCloseButton onClick={this.onClose} />
         <Column spanHeight center>
           <QrReader
             delay={this.state.delay}
