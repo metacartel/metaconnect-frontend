@@ -59,7 +59,7 @@ const SocialMediaCard = ({ name, socialMedia, ...props }) => (
   <Card {...props}>
     <StyledWrapper>
       <StyledProfile>
-        <StyledName>{`@${name}`}</StyledName>
+        <StyledName>{formatHandle(name)}</StyledName>
         <StyledSocialMediaWrapper>
           <StyledSocialMedia>
             {!!socialMedia.twitter && (

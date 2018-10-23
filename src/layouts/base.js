@@ -6,6 +6,7 @@ import Wrapper from "../components/Wrapper";
 import Column from "../components/Column";
 import Notification from "../components/Notification";
 import SocialMediaList from "../components/SocialMediaList";
+import { formatHandle } from "../helpers/utilities";
 import { responsive } from "../styles";
 
 const StyledLayout = styled.div`
@@ -69,7 +70,7 @@ const Base = ({
       <StyledContent>
         <StyledWrapper paddingTop={paddingTop} maxWidth={400}>
           <StyledProfile>
-            <StyledName>{`@${name}`}</StyledName>
+            <StyledName>{formatHandle(name)}</StyledName>
             {showSocialMedia && <SocialMediaList socialMedia={socialMedia} />}
           </StyledProfile>
           {children}
