@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import Base from "../layouts/base";
 import Card from "../components/Card";
-import Column from "../components/Column";
 import Form from "../components/Form";
 import Input from "../components/Input";
 import Button from "../components/Button";
@@ -18,16 +17,6 @@ import {
   cleanHandle
 } from "../helpers/utilities";
 import { fonts, colors } from "../styles";
-
-const StyledWrapper = styled(Column)`
-  width: 100%;
-  height: 100%;
-  padding-top: ${({ paddingTop }) => (paddingTop ? "100px" : "0")};
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
 
 const StyledTitle = styled.h2`
   margin: 20px 0;
@@ -117,110 +106,108 @@ class Home extends Component {
   render() {
     const { pendingMetaConnection, name, title, subtitle } = this.state;
     return (
-      <Base>
-        <StyledWrapper paddingTop={!pendingMetaConnection} maxWidth={400}>
-          <StyledTitle>{title}</StyledTitle>
-          <StyledRedLine />
-          <StyledSubtitle>{subtitle}</StyledSubtitle>
-          <Card>
-            <Form onSubmit={this.onSubmit}>
-              <Input
-                required
-                label="Username"
-                placeholder="@carlosmatos"
-                type="text"
-                color={"lightGrey"}
-                shadow={false}
-                value={name}
-                onChange={this.updateName}
-                autoCapitalize="off"
-              />
-              {pendingMetaConnection && (
-                <Fragment>
-                  <Input
-                    label="Twitter"
-                    placeholder="@twitter"
-                    type="text"
-                    color={"lightGrey"}
-                    shadow={false}
-                    value={this.state.twitter}
-                    autoCapitalize="off"
-                    onChange={({ target }) =>
-                      this.updateHandle(target.value, true, "twitter")
-                    }
-                  />
-                  <Input
-                    label="Telegram"
-                    placeholder="@telegram"
-                    type="text"
-                    color={"lightGrey"}
-                    shadow={false}
-                    value={this.state.telegram}
-                    autoCapitalize="off"
-                    onChange={({ target }) =>
-                      this.updateHandle(target.value, true, "telegram")
-                    }
-                  />
-                  <Input
-                    label="Github"
-                    placeholder="@github"
-                    type="text"
-                    color={"lightGrey"}
-                    shadow={false}
-                    value={this.state.github}
-                    autoCapitalize="off"
-                    onChange={({ target }) =>
-                      this.updateHandle(target.value, true, "github")
-                    }
-                  />
+      <Base paddingTop={!pendingMetaConnection}>
+        <StyledTitle>{title}</StyledTitle>
+        <StyledRedLine />
+        <StyledSubtitle>{subtitle}</StyledSubtitle>
+        <Card>
+          <Form onSubmit={this.onSubmit}>
+            <Input
+              required
+              label="Username"
+              placeholder="@carlosmatos"
+              type="text"
+              color={"lightGrey"}
+              shadow={false}
+              value={name}
+              onChange={this.updateName}
+              autoCapitalize="off"
+            />
+            {pendingMetaConnection && (
+              <Fragment>
+                <Input
+                  label="Twitter"
+                  placeholder="@twitter"
+                  type="text"
+                  color={"lightGrey"}
+                  shadow={false}
+                  value={this.state.twitter}
+                  autoCapitalize="off"
+                  onChange={({ target }) =>
+                    this.updateHandle(target.value, true, "twitter")
+                  }
+                />
+                <Input
+                  label="Telegram"
+                  placeholder="@telegram"
+                  type="text"
+                  color={"lightGrey"}
+                  shadow={false}
+                  value={this.state.telegram}
+                  autoCapitalize="off"
+                  onChange={({ target }) =>
+                    this.updateHandle(target.value, true, "telegram")
+                  }
+                />
+                <Input
+                  label="Github"
+                  placeholder="@github"
+                  type="text"
+                  color={"lightGrey"}
+                  shadow={false}
+                  value={this.state.github}
+                  autoCapitalize="off"
+                  onChange={({ target }) =>
+                    this.updateHandle(target.value, true, "github")
+                  }
+                />
 
-                  <Input
-                    label="Linkedin"
-                    placeholder="@linkedin"
-                    type="text"
-                    color={"lightGrey"}
-                    shadow={false}
-                    value={this.state.linkedin}
-                    autoCapitalize="off"
-                    onChange={({ target }) =>
-                      this.updateHandle(target.value, true, "linkedin")
-                    }
-                  />
+                <Input
+                  label="Linkedin"
+                  placeholder="@linkedin"
+                  type="text"
+                  color={"lightGrey"}
+                  shadow={false}
+                  value={this.state.linkedin}
+                  autoCapitalize="off"
+                  onChange={({ target }) =>
+                    this.updateHandle(target.value, true, "linkedin")
+                  }
+                />
 
-                  <Input
-                    label="Phone"
-                    placeholder="+13442321010"
-                    type="text"
-                    color={"lightGrey"}
-                    shadow={false}
-                    value={this.state.phone}
-                    autoCapitalize="off"
-                    onChange={({ target }) =>
-                      this.updateHandle(target.value, false, "phone")
-                    }
-                  />
+                <Input
+                  label="Phone"
+                  placeholder="+13442321010"
+                  type="text"
+                  color={"lightGrey"}
+                  shadow={false}
+                  value={this.state.phone}
+                  autoCapitalize="off"
+                  onChange={({ target }) =>
+                    this.updateHandle(target.value, false, "phone")
+                  }
+                />
 
-                  <Input
-                    label="Email"
-                    placeholder="johndoe@email.com"
-                    type="email"
-                    color={"lightGrey"}
-                    shadow={false}
-                    value={this.state.email}
-                    autoCapitalize="off"
-                    onChange={({ target }) =>
-                      this.updateHandle(target.value, false, "email")
-                    }
-                  />
-                </Fragment>
-              )}
+                <Input
+                  label="Email"
+                  placeholder="johndoe@email.com"
+                  type="email"
+                  color={"lightGrey"}
+                  shadow={false}
+                  value={this.state.email}
+                  autoCapitalize="off"
+                  onChange={({ target }) =>
+                    this.updateHandle(target.value, false, "email")
+                  }
+                />
+              </Fragment>
+            )}
 
-              <StyledButton color="red" textTransform="uppercase" type="submit">
-                {"Start 🚀"}
-              </StyledButton>
-            </Form>
-          </Card>
-        </StyledWrapper>
+            <StyledButton color="red" textTransform="uppercase" type="submit">
+              {"Start 🚀"}
+            </StyledButton>
+          </Form>
+        </Card>
       </Base>
     );
   }

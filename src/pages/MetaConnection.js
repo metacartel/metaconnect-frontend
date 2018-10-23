@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import Base from "../layouts/base";
-import Column from "../components/Column";
 import Button from "../components/Button";
 import SocialMediaCard from "../components/SocialMediaCard";
 import {
@@ -12,34 +11,11 @@ import {
   metaConnectionReject
 } from "../reducers/_metaConnection";
 import { formatHandle, cleanHandle } from "../helpers/utilities";
-import { responsive } from "../styles";
+import { fonts } from "../styles";
 
-const StyledWrapper = styled(Column)`
-  height: 100%;
-  padding: 20px;
-  min-height: 100vh;
-  @media screen and (${responsive.sm.max}) {
-    padding: 20px 0;
-    padding-top: 50px;
-  }
-`;
-
-const StyledProfile = styled.div`
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  margin-bottom: 50px;
-  @media screen and (${responsive.sm.max}) {
-    margin-bottom: 15px;
-  }
-`;
-
-const StyledName = styled.h3`
-  & span {
-    margin-right: 12px;
-  }
+const StyledSubtitle = styled.p`
+  font-size: ${fonts.size.h4};
+  margin: 40px 0;
 `;
 
 const StyledActions = styled.div`
@@ -84,53 +60,45 @@ class EditSocialMedia extends Component {
   };
   onClose = () => window.browserHistory.push("/dashboard");
   render = () => {
-    const { _name, request, name, socialMedia } = this.props;
+    const { request, name, socialMedia } = this.props;
     return (
       <Base>
-        <StyledWrapper maxWidth={400}>
-          <StyledProfile>
-            <StyledName>
-              <span>{`👩‍🚀`}</span>
-              {`@${_name}`}
-            </StyledName>
-            <p>
-              {request
-                ? "You have a new MetaConnection! 🎉"
-                : "Check out your MetaConnection ❤️"}
-            </p>
-          </StyledProfile>
+        <StyledSubtitle>
+          {request
+            ? "You have a new MetaConnection! 🎉"
+            : "Check out your MetaConnection ❤️"}
+        </StyledSubtitle>
 
-          <SocialMediaCard name={name} socialMedia={socialMedia} />
+        <SocialMediaCard name={name} socialMedia={socialMedia} />
 
-          {request ? (
-            <StyledActions>
-              <StyledButton
-                outline
-                color="red"
-                onClick={this.props.metaConnectionReject}
-              >
-                {"Reject"}
-              </StyledButton>
-              <StyledButton
-                outline
-                color="green"
-                onClick={this.props.metaConnectionApprove}
-              >
-                {"Approve"}
-              </StyledButton>
-            </StyledActions>
-          ) : (
-            <StyledActions>
-              <StyledButton
-                outline
-                color="red"
-                onClick={this.props.metaConnectionHide}
-              >
-                {"Go Back"}
-              </StyledButton>
-            </StyledActions>
-          )}
-        </StyledWrapper>
+        {request ? (
+          <StyledActions>
+            <StyledButton
+              outline
+              color="red"
+              onClick={this.props.metaConnectionReject}
+            >
+              {"Reject"}
+            </StyledButton>
+            <StyledButton
+              outline
+              color="green"
+              onClick={this.props.metaConnectionApprove}
+            >
+              {"Approve"}
+            </StyledButton>
+          </StyledActions>
+        ) : (
+          <StyledActions>
+            <StyledButton
+              outline
+              color="red"
+              onClick={this.props.metaConnectionHide}
+            >
+              {"Go Back"}
+            </StyledButton>
+          </StyledActions>
+        )}
       </Base>
     );
   };
@@ -142,8 +110,7 @@ EditSocialMedia.propTypes = {
   metaConnectionReject: PropTypes.func.isRequired
 };
 
-const reduxProps = ({ account, metaConnection }) => ({
-  _name: account.name,
+const reduxProps = ({ metaConnection }) => ({
   request: metaConnection.request,
   name: metaConnection.name,
   socialMedia: metaConnection.socialMedia

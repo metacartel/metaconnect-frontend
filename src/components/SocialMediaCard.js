@@ -10,7 +10,7 @@ import linkedin from "../assets/linkedin.svg";
 import phone from "../assets/phone.svg";
 import email from "../assets/email.svg";
 import { formatHandle } from "../helpers/utilities";
-import { responsive } from "../styles";
+import { colors, responsive } from "../styles";
 
 const StyledWrapper = styled(Column)`
   padding: 25px;
@@ -22,6 +22,7 @@ const StyledWrapper = styled(Column)`
 
 const StyledProfile = styled.div`
   width: 100%;
+  padding: 20px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -44,6 +45,9 @@ const StyledSocialMedia = styled.div`
   & a {
     display: flex;
     margin: 6px 0;
+    border: 1px solid rgb(${colors.dark});
+    padding: 6px;
+    border-radius: 6px;
   }
 `;
 
@@ -55,10 +59,7 @@ const SocialMediaCard = ({ name, socialMedia, ...props }) => (
   <Card {...props}>
     <StyledWrapper>
       <StyledProfile>
-        <StyledName>
-          <span>{`👩‍🚀`}</span>
-          {`@${name}`}
-        </StyledName>
+        <StyledName>{`@${name}`}</StyledName>
         <StyledSocialMediaWrapper>
           <StyledSocialMedia>
             {!!socialMedia.twitter && (

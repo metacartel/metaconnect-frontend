@@ -6,13 +6,11 @@ import Base from "../layouts/base";
 import Card from "../components/Card";
 import Icon from "../components/Icon";
 import Column from "../components/Column";
-import SocialMediaList from "../components/SocialMediaList";
 import QRCodeScanner from "../components/QRCodeScanner";
 import QRCodeDisplay from "../components/QRCodeDisplay";
 import Loader from "../components/Loader";
 import camera from "../assets/camera.svg";
 import qrcode from "../assets/qrcode.svg";
-import { responsive } from "../styles";
 import { notificationShow } from "../reducers/_notification";
 import { metaConnectionShow } from "../reducers/_metaConnection";
 import {
@@ -25,16 +23,6 @@ import {
   generateNewMetaConnection
 } from "../helpers/utilities";
 import { colors, transitions } from "../styles";
-
-const StyledWrapper = styled(Column)`
-  padding: 20px;
-  height: 100%;
-  min-height: 100vh;
-  @media screen and (${responsive.sm.max}) {
-    padding: 20px 0;
-    padding-top: 50px;
-  }
-`;
 
 const StyledQRCodeWrapper = styled(Column)`
   position: relative;
@@ -69,20 +57,6 @@ const StyledMetaConnections = styled.div`
   }
 `;
 
-const StyledProfile = styled.div`
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-`;
-
-const StyledName = styled.h3`
-  & span {
-    margin-right: 12px;
-  }
-`;
-
 const StyledMetaConnectionsListWrapper = styled.div`
   width: 100%;
   margin: 20px auto;
@@ -94,6 +68,7 @@ const StyledMetaConnectionsItem = styled.div`
   margin: 10px auto;
   text-align: left;
   cursor: pointer;
+  padding: 0 8px;
 `;
 
 const StyledMetaConnectionsEmpty = styled(StyledMetaConnectionsItem)`
@@ -266,84 +241,78 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <Base>
-        <StyledWrapper maxWidth={400}>
-          <StyledProfile>
-            <StyledName>{`@${this.props.name}`}</StyledName>
-            <SocialMediaList socialMedia={this.props.socialMedia} />
-          </StyledProfile>
-          <StyledContainer>
-            <StyledMetaConnections>
-              {Object.keys(this.props.metaConnections).length || 0}
-              <span>{` ❤️`}</span>
-            </StyledMetaConnections>
-            <StyledParagrah>{`Scan to get more ❤️`}</StyledParagrah>
-          </StyledContainer>
-          <Card>
-            <StyledTabsWrapper>
-              <StyledTab
-                active={!this.state.scan}
+      <Base showSocialMedia>
+        <StyledContainer>
+          <StyledMetaConnections>
+            {Object.keys(this.props.metaConnections).length || 0}
+            <span>{` ❤️`}</span>
+          </StyledMetaConnections>
+          <StyledParagrah>{`Scan to get more ❤️`}</StyledParagrah>
+        </StyledContainer>
+        <Card>
+          <StyledTabsWrapper>
+            <StyledTab
+              active={!this.state.scan}
+              onClick={this.toggleQRCodeScanner}
+            >
+              <StyledIcon
+                icon={qrcode}
+                size={20}
+                color={"dark"}
                 onClick={this.toggleQRCodeScanner}
-              >
-                <StyledIcon
-                  icon={qrcode}
-                  size={20}
-                  color={"dark"}
-                  onClick={this.toggleQRCodeScanner}
-                />
-                <p>QR Code</p>
-              </StyledTab>
-              <StyledTab
-                active={this.state.scan}
+              />
+              <p>QR Code</p>
+            </StyledTab>
+            <StyledTab
+              active={this.state.scan}
+              onClick={this.toggleQRCodeScanner}
+            >
+              <StyledIcon
+                icon={camera}
+                size={20}
+                color={"dark"}
                 onClick={this.toggleQRCodeScanner}
-              >
-                <StyledIcon
-                  icon={camera}
-                  size={20}
-                  color={"dark"}
-                  onClick={this.toggleQRCodeScanner}
-                />
-                <p>Scan</p>
-              </StyledTab>
-            </StyledTabsWrapper>
-            <StyledQRCodeWrapper>
-              {this.state.scan ? (
-                <QRCodeScanner
-                  onValidate={this.onQRCodeValidate}
-                  onError={this.onQRCodeError}
-                  onScan={this.onQRCodeScan}
-                  onClose={this.toggleQRCodeScanner}
-                />
-              ) : !this.props.loading ? (
-                <QRCodeDisplay data={this.generateQRCodeURI()} />
-              ) : (
-                <Loader color="dark" background="white" />
-              )}
-            </StyledQRCodeWrapper>
-          </Card>
-          <StyledMetaConnectionsListWrapper>
-            <h2>Your MetaConnections</h2>
-            {Object.keys(this.props.metaConnections).length ? (
-              <StyledMetaConnectionsList>
-                {Object.keys(this.props.metaConnections).map(key => (
-                  <StyledMetaConnectionsItem
-                    onClick={() =>
-                      this.openExistingMetaConnection(
-                        this.props.metaConnections[key]
-                      )
-                    }
-                  >
-                    {formatHandle(key)}
-                  </StyledMetaConnectionsItem>
-                ))}
-              </StyledMetaConnectionsList>
+              />
+              <p>Scan</p>
+            </StyledTab>
+          </StyledTabsWrapper>
+          <StyledQRCodeWrapper>
+            {this.state.scan ? (
+              <QRCodeScanner
+                onValidate={this.onQRCodeValidate}
+                onError={this.onQRCodeError}
+                onScan={this.onQRCodeScan}
+                onClose={this.toggleQRCodeScanner}
+              />
+            ) : !this.props.loading ? (
+              <QRCodeDisplay data={this.generateQRCodeURI()} />
             ) : (
-              <StyledMetaConnectionsEmpty>
-                {"Go make some MetaConnections"}
-              </StyledMetaConnectionsEmpty>
+              <Loader color="dark" background="white" />
             )}
-          </StyledMetaConnectionsListWrapper>
-        </StyledWrapper>
+          </StyledQRCodeWrapper>
+        </Card>
+        <StyledMetaConnectionsListWrapper>
+          <h2>Your MetaConnections</h2>
+          {Object.keys(this.props.metaConnections).length ? (
+            <StyledMetaConnectionsList>
+              {Object.keys(this.props.metaConnections).map(key => (
+                <StyledMetaConnectionsItem
+                  onClick={() =>
+                    this.openExistingMetaConnection(
+                      this.props.metaConnections[key]
+                    )
+                  }
+                >
+                  {formatHandle(key)}
+                </StyledMetaConnectionsItem>
+              ))}
+            </StyledMetaConnectionsList>
+          ) : (
+            <StyledMetaConnectionsEmpty>
+              {"Go make some MetaConnections"}
+            </StyledMetaConnectionsEmpty>
+          )}
+        </StyledMetaConnectionsListWrapper>
       </Base>
     );
   }
