@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled, { keyframes } from 'styled-components';
-import { fonts, colors } from '../styles';
+import React from "react";
+import PropTypes from "prop-types";
+import styled, { keyframes } from "styled-components";
+import { fonts, colors } from "../styles";
 
 const load = keyframes`
   0% {
@@ -20,7 +20,7 @@ const StyledLoader = styled.div`
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   border-radius: 50%;
-  background ${({ color }) => `rgb(${colors[color]})`};
+  background: ${({ color }) => `rgb(${colors[color]})`};
   background: ${({ background, color }) =>
     `linear-gradient(to right, rgb(${colors[color]}) 10%, rgba(${
       colors[background]
@@ -31,12 +31,12 @@ const StyledLoader = styled.div`
   &:before {
     width: 50%;
     height: 50%;
-    background ${({ color }) => `rgb(${colors[color]})`};
+    background: ${({ color }) => `rgb(${colors[color]})`};
     border-radius: 100% 0 0 0;
     position: absolute;
     top: 0;
     left: 0;
-    content: '';
+    content: "";
   }
 
   &:after {
@@ -44,7 +44,7 @@ const StyledLoader = styled.div`
     width: 75%;
     height: 75%;
     border-radius: 50%;
-    content: '';
+    content: "";
     margin: auto;
     position: absolute;
     top: 0;
@@ -66,8 +66,8 @@ Loader.propTypes = {
 
 Loader.defaultProps = {
   size: 50,
-  color: 'white',
-  background: 'background'
+  color: "white",
+  background: "background"
 };
 
 export default Loader;

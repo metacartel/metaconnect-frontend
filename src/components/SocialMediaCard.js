@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Card from "../components/Card";
 import Column from "../components/Column";
+import Icon from "../components/Icon";
 import twitter from "../assets/twitter.svg";
 import telegram from "../assets/telegram.svg";
 import github from "../assets/github.svg";
@@ -21,6 +22,7 @@ const StyledWrapper = styled(Column)`
 
 const StyledProfile = styled.div`
   width: 100%;
+  padding: 20px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -43,28 +45,21 @@ const StyledSocialMedia = styled.div`
   & a {
     display: flex;
     margin: 6px 0;
+    border: 1px solid rgb(${colors.dark});
+    padding: 6px;
+    border-radius: 6px;
   }
 `;
 
-const StyledSocialMediaIcon = styled.div`
-  width: 20px;
-  height: 20px;
+const StyledIcon = styled(Icon)`
   margin-right: 10px;
-  mask: ${({ icon }) => `url(${icon}) center no-repeat`};
-  mask-size: 90%;
-  background-color: ${({ color }) => `rgb(${colors[color]})`};
-  background-size: contain;
-  background-repeat: no-repeat;
 `;
 
 const SocialMediaCard = ({ name, socialMedia, ...props }) => (
   <Card {...props}>
     <StyledWrapper>
       <StyledProfile>
-        <StyledName>
-          <span>{`👩‍🚀`}</span>
-          {`@${name}`}
-        </StyledName>
+        <StyledName>{formatHandle(name)}</StyledName>
         <StyledSocialMediaWrapper>
           <StyledSocialMedia>
             {!!socialMedia.twitter && (
@@ -73,7 +68,7 @@ const SocialMediaCard = ({ name, socialMedia, ...props }) => (
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <StyledSocialMediaIcon color="dark" icon={twitter} />
+                <StyledIcon color="dark" icon={twitter} />
                 <p>{formatHandle(socialMedia.twitter)}</p>
               </a>
             )}
@@ -83,7 +78,7 @@ const SocialMediaCard = ({ name, socialMedia, ...props }) => (
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <StyledSocialMediaIcon color="dark" icon={telegram} />
+                <StyledIcon color="dark" icon={telegram} />
                 <p>{formatHandle(socialMedia.telegram)}</p>
               </a>
             )}
@@ -93,7 +88,7 @@ const SocialMediaCard = ({ name, socialMedia, ...props }) => (
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <StyledSocialMediaIcon color="dark" icon={github} />
+                <StyledIcon color="dark" icon={github} />
                 <p>{formatHandle(socialMedia.github)}</p>
               </a>
             )}
@@ -104,7 +99,7 @@ const SocialMediaCard = ({ name, socialMedia, ...props }) => (
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <StyledSocialMediaIcon color="dark" icon={linkedin} />
+                <StyledIcon color="dark" icon={linkedin} />
                 <p>{formatHandle(socialMedia.linkedin)}</p>
               </a>
             )}
@@ -114,7 +109,7 @@ const SocialMediaCard = ({ name, socialMedia, ...props }) => (
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <StyledSocialMediaIcon color="dark" icon={email} />
+                <StyledIcon color="dark" icon={email} />
                 <p>{formatHandle(socialMedia.email)}</p>
               </a>
             )}
@@ -124,7 +119,7 @@ const SocialMediaCard = ({ name, socialMedia, ...props }) => (
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <StyledSocialMediaIcon color="dark" icon={phone} />
+                <StyledIcon color="dark" icon={phone} />
                 <p>{formatHandle(socialMedia.phone)}</p>
               </a>
             )}

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 
 const StyledForm = styled.form`
   width: 100%;
@@ -12,7 +12,7 @@ class Form extends Component {
     document.activeElement.blur();
   }
 
-  onSubmitForm = (event) => {
+  onSubmitForm = event => {
     event.preventDefault();
     this.props.onSubmit(event);
   };
@@ -24,7 +24,7 @@ class Form extends Component {
         {children}
       </StyledForm>
     );
-  }
+  };
 }
 
 Form.propTypes = {
