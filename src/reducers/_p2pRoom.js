@@ -89,21 +89,18 @@ export const p2pRoomRegisterListeners = (listeners = defaultListeners) => (
   listeners.forEach(({ event, callback }) => {
     switch (event) {
       case "peer joined":
-        console.log('REGISTER: "peer joined" event listener', callback);
         room.on("peer joined", peer => {
           if (devMonitor) dispatch(p2pRoomUpdateLogs(`Joined: ${peer}`));
           callback(peer);
         });
         break;
       case "peer left":
-        console.log('REGISTER: "peer left" event listener', callback);
         room.on("peer left", peer => {
           if (devMonitor) dispatch(p2pRoomUpdateLogs(`Left: ${peer}`));
           callback(peer);
         });
         break;
       case "subscribed":
-        console.log('REGISTER: "subscribed" event listener', callback);
         room.on("subscribed", () => {
           if (devMonitor)
             dispatch(p2pRoomUpdateLogs(`Room Subscribed: "${roomName}"`));
@@ -111,7 +108,6 @@ export const p2pRoomRegisterListeners = (listeners = defaultListeners) => (
         });
         break;
       case "message":
-        console.log('REGISTER: "message" event listener', callback);
         room.on("message", message => {
           if (devMonitor)
             dispatch(p2pRoomUpdateLogs(`Message: ${message.data.toString()}`));

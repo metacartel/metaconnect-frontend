@@ -158,10 +158,7 @@ class Dashboard extends Component {
         throw new Error(err);
       }
       if (result) {
-        console.log("onMessage msgString", msgString);
-        console.log("onMessage result", result);
         if (result.request) {
-          // const metaConnection = generateNewMetaConnection(result);
           this.openNewMetaConnection(result);
         } else if (result.approved) {
           this.props.notificationShow(
@@ -208,7 +205,6 @@ class Dashboard extends Component {
     if (userId) {
       uri = `${baseUrl}?id=${userId}&name=${name}&socialMedia=${socialMedia}`;
     }
-    console.log("URI", uri);
 
     return uri;
   };
@@ -229,9 +225,7 @@ class Dashboard extends Component {
   };
 
   onQRCodeScan = string => {
-    console.log("onQRCodeScan string", string);
     const result = handleMetaConnectionURI(string);
-    console.log("result", result);
     if (result) {
       this.toggleQRCodeScanner();
       this.sendMetaConnection(result.peer);

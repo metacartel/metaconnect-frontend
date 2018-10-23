@@ -190,12 +190,9 @@ export function generateNewMetaConnection({ peer, name, socialMedia }) {
 export function handleMetaConnectionURI(string) {
   let result = null;
   const pathEnd = string.indexOf("?") !== -1 ? string.indexOf("?") : undefined;
-  console.log("pathEnd", pathEnd);
   const queryString =
     typeof pathEnd !== "undefined" ? string.substring(pathEnd) : "";
-  console.log("queryString", queryString);
   let queryParams = parseQueryParams(queryString);
-  console.log("queryParams", queryParams);
   if (Object.keys(queryParams).length) {
     const peer = queryParams.id;
     const name = decodeURIComponent(queryParams.name);
