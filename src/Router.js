@@ -7,12 +7,6 @@ import Dashboard from "./pages/Dashboard";
 import EditSocialMedia from "./pages/EditSocialMedia";
 import MetaConnection from "./pages/MetaConnection";
 import NotFound from "./pages/NotFound";
-import { p2pRoomSendMessage } from "./reducers/_p2pRoom";
-import { metaConnectionShow } from "./reducers/_metaConnection";
-import {
-  generateNewMetaConnection,
-  handleMetaConnectionURI
-} from "./helpers/utilities";
 
 class Router extends Component {
   componentDidMount() {
@@ -20,25 +14,13 @@ class Router extends Component {
   }
 
   render = () => {
-    const name = this.props.name;
+    const { name } = this.props;
     return (
       <Switch>
         <Route
           exact
           path="/"
           render={routerProps => {
-            if (routerProps.location.search) {
-              let result = handleMetaConnectionURI(routerProps.location.search);
-              if (result) {
-                const metaConnection = generateNewMetaConnection({ name });
-                this.props.p2pRoomSendMessage(
-                  result.peer,
-                  JSON.stringify(metaConnection)
-                );
-                this.props.metaConnectionShow(result.metaConnection);
-                return <Redirect to="/meta-connection" />;
-              }
-            }
             if (name) {
               return <Redirect to="/dashboard" />;
             }
@@ -98,6 +80,6 @@ const reduxProps = ({ account, metaConnection }) => ({
 export default withRouter(
   connect(
     reduxProps,
-    { metaConnectionShow, p2pRoomSendMessage }
+    null
   )(Router)
 );

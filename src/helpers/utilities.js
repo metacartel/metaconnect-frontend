@@ -164,7 +164,10 @@ export function parseQueryParams(queryString) {
  * @param  {Object}  {name}
  * @return {Object}
  */
-export function generateNewMetaConnection({ name, socialMedia }) {
+export function generateNewMetaConnection({ peer, name, socialMedia }) {
+  if (!peer || typeof peer !== "string") {
+    throw new Error("ERROR: MetaConnection peer is missing or invalid");
+  }
   if (!name || typeof name !== "string") {
     throw new Error("ERROR: MetaConnection name is missing or invalid");
   }
@@ -172,9 +175,10 @@ export function generateNewMetaConnection({ name, socialMedia }) {
     throw new Error("ERROR: MetaConnection socialMedia is missing or invalid");
   }
   return {
+    peer: peer,
     request: true,
     name: name,
-    socialMedia: socialMedia ? JSON.parse(socialMedia) : {}
+    socialMedia: socialMedia
   };
 }
 
@@ -186,15 +190,17 @@ export function generateNewMetaConnection({ name, socialMedia }) {
 export function handleMetaConnectionURI(string) {
   let result = null;
   const pathEnd = string.indexOf("?") !== -1 ? string.indexOf("?") : undefined;
+  console.log("pathEnd", pathEnd);
   const queryString =
-    typeof pathEnd === "undefined" ? string.substring(pathEnd) : "";
+    typeof pathEnd !== "undefined" ? string.substring(pathEnd) : "";
+  console.log("queryString", queryString);
   let queryParams = parseQueryParams(queryString);
+  console.log("queryParams", queryParams);
   if (Object.keys(queryParams).length) {
     const peer = queryParams.id;
-    const name = queryParams.name;
-    const socialMedia = queryParams.socialMedia;
-    const metaConnection = generateNewMetaConnection({ name, socialMedia });
-    result = { peer, metaConnection };
+    const name = decodeURIComponent(queryParams.name);
+    const socialMedia = JSON.parse(decodeURIComponent(queryParams.socialMedia));
+    result = generateNewMetaConnection({ peer, name, socialMedia });
   }
   return result;
 }

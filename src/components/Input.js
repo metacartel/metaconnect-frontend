@@ -12,6 +12,7 @@ const StyledInputWrapper = styled.div`
 `;
 
 const StyledLabel = styled.label`
+  font-weight: ${({ required }) => (required ? fonts.weight.bold : "inherit")};
   opacity: ${({ hide }) => (hide ? 0 : 1)};
   align-self: start;
   width: 100%;
@@ -50,6 +51,7 @@ const StyledInput = styled.input`
 `;
 
 const Input = ({
+  required,
   label,
   color,
   type,
@@ -62,8 +64,11 @@ const Input = ({
 }) => {
   return (
     <StyledInputWrapper disabled={disabled}>
-      <StyledLabel hide={label === "Input"}>{label}</StyledLabel>
+      <StyledLabel required={required} hide={label === "Input"}>
+        {label}
+      </StyledLabel>
       <StyledInput
+        required={required}
         disabled={disabled}
         color={color}
         shadow={shadow}

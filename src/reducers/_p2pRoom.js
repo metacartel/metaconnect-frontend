@@ -136,6 +136,13 @@ export const p2pRoomSendMessage = (peer, message) => (dispatch, getState) => {
   if (!peers.includes(peer)) {
     throw new Error("Provided peer can't be found");
   }
+  if (message && typeof message === "object") {
+    try {
+      message = JSON.stringify(message);
+    } catch (error) {
+      throw new Error("Message invalid format");
+    }
+  }
   room.sendTo(peer, message);
 };
 

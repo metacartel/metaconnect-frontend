@@ -157,8 +157,8 @@ class Dashboard extends Component {
     scan: false
   };
 
-  componentDidUpdate(prevProps) {
-    if (this.props.loading && this.props.connected) {
+  componentDidUpdate() {
+    if (!this.props.loading && this.props.connected) {
       const listeners = [
         {
           event: "message",
@@ -174,46 +174,74 @@ class Dashboard extends Component {
   };
 
   onMessage = message => {
-    let string = message.data.toString();
-    if (string.trim()) {
-      let json = null;
+    let msgString = message.data.toString();
+    if (msgString.trim()) {
+      let result = null;
       try {
-        json = JSON.parse(string);
+        result = JSON.parse(msgString);
       } catch (err) {
         throw new Error(err);
       }
-      if (json) {
-        const metaConnection = generateNewMetaConnection(json);
-        this.openMetaConnection(metaConnection);
+      if (result) {
+        console.log("onMessage msgString", msgString);
+        console.log("onMessage result", result);
+        if (result.request) {
+          // const metaConnection = generateNewMetaConnection(result);
+          this.openNewMetaConnection(result);
+        } else if (result.approved) {
+          this.props.notificationShow(
+            `${formatHandle(result.name)} has approved your MetaConnection!`
+          );
+        } else if (result.rejected) {
+          this.props.notificationShow(
+            `${formatHandle(result.name)} has rejected your MetaConnection!`,
+            true
+          );
+        }
       }
     }
   };
 
-  openMetaConnection(metaConnection) {
+  openNewMetaConnection = metaConnection =>
     this.props.metaConnectionShow(metaConnection);
-    window.browserHistory.push("/meta-connection");
-  }
+
+  openExistingMetaConnection = metaConnection => {
+    this.props.metaConnectionShow({
+      peer: null,
+      request: false,
+      name: metaConnection.name,
+      socialMedia: metaConnection.socialMedia
+    });
+  };
 
   sendMetaConnection(peer) {
     const metaConnection = generateNewMetaConnection({
+      peer: this.props.userId,
       name: this.props.name,
       socialMedia: this.props.socialMedia
     });
-    this.sendMessage(peer, JSON.stringify(metaConnection));
+    this.sendMessage(peer, metaConnection);
   }
 
   generateQRCodeURI = () => {
-    const { userId, name, socialMedia } = this.props;
+    const { userId } = this.props;
+    const name = encodeURIComponent(this.props.name);
+    const socialMedia = encodeURIComponent(
+      JSON.stringify(this.props.socialMedia)
+    );
     let uri = "";
     if (userId) {
-      uri = `{${baseUrl}}?id=${userId}&name=${name}&socialMedia=${socialMedia}`;
+      uri = `${baseUrl}?id=${userId}&name=${name}&socialMedia=${socialMedia}`;
     }
+    console.log("URI", uri);
+
     return uri;
   };
 
   toggleQRCodeScanner = () => this.setState({ scan: !this.state.scan });
 
-  onQRCodeError = () => {
+  onQRCodeError = err => {
+    console.error(err);
     this.props.notificationShow("Something went wrong!", true);
   };
 
@@ -226,12 +254,14 @@ class Dashboard extends Component {
   };
 
   onQRCodeScan = string => {
+    console.log("onQRCodeScan string", string);
     const result = handleMetaConnectionURI(string);
+    console.log("result", result);
     if (result) {
+      this.toggleQRCodeScanner();
       this.sendMetaConnection(result.peer);
-      this.openMetaConnection(result.metaConnection);
+      this.openNewMetaConnection(result);
     }
-    this.toggleQRCodeScanner();
   };
 
   render() {
@@ -239,10 +269,7 @@ class Dashboard extends Component {
       <Base>
         <StyledWrapper maxWidth={400}>
           <StyledProfile>
-            <StyledName>
-              <span>{`👩‍🚀`}</span>
-              {`@${this.props.name}`}
-            </StyledName>
+            <StyledName>{`@${this.props.name}`}</StyledName>
             <SocialMediaList socialMedia={this.props.socialMedia} />
           </StyledProfile>
           <StyledContainer>
@@ -288,7 +315,7 @@ class Dashboard extends Component {
                   onClose={this.toggleQRCodeScanner}
                 />
               ) : !this.props.loading ? (
-                <QRCodeDisplay data={() => this.generateQRCodeURI()} />
+                <QRCodeDisplay data={this.generateQRCodeURI()} />
               ) : (
                 <Loader color="dark" background="white" />
               )}
@@ -300,14 +327,11 @@ class Dashboard extends Component {
               <StyledMetaConnectionsList>
                 {Object.keys(this.props.metaConnections).map(key => (
                   <StyledMetaConnectionsItem
-                    onClick={() => {
-                      const metaConnection = {
-                        request: false,
-                        name: this.props.metaConnections[key].name,
-                        socialMedia: this.props.metaConnections[key].socialMedia
-                      };
-                      this.openMetaConnection(metaConnection);
-                    }}
+                    onClick={() =>
+                      this.openExistingMetaConnection(
+                        this.props.metaConnections[key]
+                      )
+                    }
                   >
                     {formatHandle(key)}
                   </StyledMetaConnectionsItem>
