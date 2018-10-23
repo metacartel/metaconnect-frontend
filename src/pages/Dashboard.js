@@ -297,6 +297,7 @@ class Dashboard extends Component {
             <StyledMetaConnectionsList>
               {Object.keys(this.props.metaConnections).map(key => (
                 <StyledMetaConnectionsItem
+                  key={key}
                   onClick={() =>
                     this.openExistingMetaConnection(
                       this.props.metaConnections[key]
