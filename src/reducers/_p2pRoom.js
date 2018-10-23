@@ -1,5 +1,4 @@
-import IPFS from "ipfs";
-import Room from "ipfs-pubsub-room";
+/* global Ipfs PubSubRoom */
 
 // -- Constants ------------------------------------------------------------- //
 const P2PROOM_INIT_REQUEST = "p2pRoom/P2PROOM_INIT_REQUEST";
@@ -16,7 +15,7 @@ const P2PROOM_DISCONNECTED = "p2pRoom/P2PROOM_DISCONNECTED";
 
 async function loadIpfs() {
   try {
-    const ipfs = new IPFS({
+    const ipfs = new Ipfs({
       EXPERIMENTAL: { pubsub: true },
       repo: "metaconnect",
       config: {
@@ -61,7 +60,7 @@ export const p2pRoomInit = () => async (dispatch, getState) => {
       });
     });
 
-    const room = Room(ipfs, roomName);
+    const room = PubSubRoom(ipfs, roomName);
 
     dispatch({ type: P2PROOM_OPEN_ROOM, payload: room });
 
@@ -130,7 +129,7 @@ export const p2pRoomRegisterListeners = (listeners = defaultListeners) => (
 export const p2pRoomSendMessage = (peer, message) => (dispatch, getState) => {
   const { connected, room } = getState().p2pRoom;
   if (!connected || !room) {
-    throw new Error("IPFS Network not connected or P2P Room not available");
+    throw new Error("Ipfs Network not connected or P2P Room not available");
   }
   const peers = room.getPeers();
   if (!peers.includes(peer)) {
