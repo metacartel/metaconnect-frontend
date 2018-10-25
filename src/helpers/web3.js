@@ -8,7 +8,8 @@ import {
  * @desc web3 http instance
  */
 export const web3Instance = new Web3(
-  new Web3.providers.HttpProvider(`https://mainnet.infura.io/`)
+  //TODO: switch network
+  new Web3.providers.HttpProvider(`https://ropsten.infura.io/`)
 );
 
 web3Instance.eth.getTransactionReceiptMined = getTransactionReceiptMined;
