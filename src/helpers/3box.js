@@ -1,9 +1,10 @@
 import {signMsg} from "./wallet";
 
-const ethers = require('ethers')
+const ethers = require('ethers');
 const Web3 = require('web3');
 const ProviderBridge = require('ethers-web3-bridge');
-const ThreeBox = require('3box');
+const Box = require('3box');
+let box;
 
 let web3 = new Web3();
 let currentAccount;
@@ -44,9 +45,16 @@ if (web3Provider === "browser") {
 }
 
 export const createAccount = async address => {
-  return await ThreeBox.openBox(currentAccount, web3.currentProvider);
+  box = await Box.openBox(currentAccount, web3.currentProvider);
+  return box;
 };
 
 export const getAccount =  async address => {
-  return await ThreeBox.getProfile(currentAccount);
+  // const nickname = await box.public.set('name', 'mark');
+  console.log('the box: ', box)
+  // const profile = await Box.getProfile("0xA1b02d8c67b0FDCF4E379855868DeB470E169cfB");
+  // console.log('PROFILE: ', profile);
+  // const nickname = await Box.public.get('name')
+  // console.log(nickname)
+  // return profile;
 };

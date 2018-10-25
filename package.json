@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "3box": "^1.0.0-beta-10",
+    "3box": "0.0.4",
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
     "dapparatus": "^1.0.22",

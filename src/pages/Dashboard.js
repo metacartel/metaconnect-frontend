@@ -155,6 +155,7 @@ class Dashboard extends Component {
     console.log(this.state.account);
   };
   getProfile = async () => {
+    console.log("getting profile...");
     const account = await getAccount();
     console.log("ACCOUNT: ", account);
     this.setState({account});
@@ -214,7 +215,8 @@ class Dashboard extends Component {
         <StyledWrapper maxWidth={400}>
           <StyledProfile>
             <StyledName>
-              <StyledAvatar onClick={this.createProfile}/>
+              <StyledAvatar2 onClick={this.createProfile}/>
+              <StyledAvatar onClick={this.getProfile}/>
               <span>{`👩‍🚀`}</span>
               {`@${name}`}
             </StyledName>
