@@ -87,7 +87,7 @@ const StyledAvatar = styled.div`
   background-color: black;
 `;
 
-const StyledAvatar2 = styled.div`
+const StyledAvatar2 = styled.input`
   width: 50px;
   height: 50px;
   border-radius: 25px;
@@ -147,6 +147,9 @@ class Dashboard extends Component {
     this.startInterval();
     console.log("WEB3: ", web3Instance);
     console.log("META-MASK-WEB3: ", window.web3);
+  }
+  onChange(e) {
+    this.setState({file:e.target.files[0]})
   }
   createProfile = async () => {
     const account = await createAccount();
@@ -215,6 +218,7 @@ class Dashboard extends Component {
         <StyledWrapper maxWidth={400}>
           <StyledProfile>
             <StyledName>
+              <StyledAvatar2 type="file" onChange={this.onChange} />
               <StyledAvatar2 onClick={this.createProfile}/>
               <StyledAvatar onClick={this.getProfile}/>
               <span>{`👩‍🚀`}</span>

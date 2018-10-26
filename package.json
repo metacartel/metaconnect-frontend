@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "3box": "0.0.4",
+    "3box": "^1.0.2",
+    "@babel/runtime": "^7.1.2",
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
     "dapparatus": "^1.0.22",
